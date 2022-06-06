@@ -11,6 +11,7 @@ parameters:
     type: string
     default: uat
     values:
+      - dev
       - uat
       - prod
 
@@ -19,6 +20,11 @@ variables:
   MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   BUILD_NUMBER: $(Build.BuildNumber)
   imageRepository: 'cgn-onboarding-portal-backend'
+  ${{ if eq(parameters['environment'], 'dev') }}:
+    dockerRegistryServiceConnection: iodreminderacr
+    dockerNamespace: iodreminderacr.azurecr.io
+    connectedServiceName: DEV-IO
+    webAppName: io-d-reminder-payment-updater   
   ${{ if eq(parameters['environment'], 'uat') }}:
     dockerRegistryServiceConnection: $(UAT_CONTAINER_REGISTRY)
     dockerNamespace: microserviceuarc.azurecr.io
