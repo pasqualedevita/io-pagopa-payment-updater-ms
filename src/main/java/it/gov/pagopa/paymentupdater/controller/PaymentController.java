@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @Api(tags = "API  Payment")
 @RestController
 @Validated
-@RequestMapping(value = "/payment", produces = APPLICATION_JSON_VALUE, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.ALL_VALUE }, method = RequestMethod.OPTIONS)
+@RequestMapping(value = "api/v1/payment", produces = APPLICATION_JSON_VALUE, consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.ALL_VALUE }, method = RequestMethod.OPTIONS)
 @RequiredArgsConstructor
 public class PaymentController {
 	
