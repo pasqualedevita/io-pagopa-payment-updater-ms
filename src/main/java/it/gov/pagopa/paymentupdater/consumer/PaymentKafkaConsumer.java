@@ -33,7 +33,8 @@ public class PaymentKafkaConsumer {
 	@Value("${kafka.paymentupdates}")
 	private String producerTopic;
 
-	private CountDownLatch greetingLatch = new CountDownLatch(1);
+	private CountDownLatch latch = new CountDownLatch(1);
+	 private String payload = null;
 
 	@KafkaListener(topics = "${kafka.payment}", groupId = "consumer-Payment", containerFactory= "kafkaListenerContainerFactoryPaymentRoot")
 	public void paymentKafkaListener(PaymentRoot root) throws JsonProcessingException {
@@ -56,7 +57,15 @@ public class PaymentKafkaConsumer {
 		} else {
 			log.info("Not found reminder in payment data with notice number: {}", message.getNoticeNumber());
 		}
-		this.greetingLatch.countDown();
+		this.latch.countDown();
 	}
+	
+    public CountDownLatch getLatch() {
+        return latch;
+    }
+
+    public String getPayload() {
+        return payload;
+    }
 
 }

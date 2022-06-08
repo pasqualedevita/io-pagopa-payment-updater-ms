@@ -23,16 +23,26 @@ public class MessageKafkaConsumer {
 	@Autowired
 	ObjectMapper mapper;
 
-	private CountDownLatch greetingLatch = new CountDownLatch(1);
+	private CountDownLatch latch = new CountDownLatch(1);
+    private String payload = null;
 
 	@KafkaListener(topics = "${kafka.message}", groupId = "consumer-message")
 	public void messageKafkaListener(Reminder reminder) throws JsonProcessingException {		
 		if(reminder != null && reminder.getContent_type().equals(MessageContentType.PAYMENT)) {		
-			log.debug("Received message: {} ", reminder);	
+			log.debug("Received message: {} ", reminder);				
 			checkNullInMessage(reminder);
+			payload = reminder.toString();
 			paymentService.save(reminder);	
 		}
-		this.greetingLatch.countDown();
+		this.latch.countDown();
 	}
+	
+    public CountDownLatch getLatch() {
+        return latch;
+    }
 
+    public String getPayload() {
+        return payload;
+    }
+    
 }

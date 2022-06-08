@@ -1,4 +1,4 @@
-package it.gov.pagopa;
+package it.gov.pagopa.paymentupdater;
 
 import java.io.IOException;
 

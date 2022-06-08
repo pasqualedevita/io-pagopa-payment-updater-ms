@@ -1,4 +1,4 @@
-package it.gov.pagopa;
+package it.gov.pagopa.paymentupdater;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +16,7 @@ public class KafkaTestContainersConfiguration {
 	@Bean
 	public Map<String, Object> consumerConfigs() {
 	    Map<String, Object> props = new HashMap<>();
-	    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:9092");
+	    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:9093");
 	    props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 	    props.put(ConsumerConfig.GROUP_ID_CONFIG, "baeldung");
 	    props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class.getName());
@@ -27,7 +27,7 @@ public class KafkaTestContainersConfiguration {
 	@Bean
 	public ProducerFactory<String, String> producerFactory() {
 	    Map<String, Object> configProps = new HashMap<>();
-	    configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:9092");
+	    configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "PLAINTEXT://localhost:9093");
 	    configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 	    configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 	    // more standard configuration

@@ -209,11 +209,7 @@
 		    <artifactId>converter</artifactId>
 		    <version>0.2.14</version>
 		</dependency>
-		<dependency>
-	      <groupId>org.apache.kafka</groupId>
-	      <artifactId>kafka-clients</artifactId>
-	      <version>3.2.0</version>
-	    </dependency>	
+
 		<dependency>
 		    <groupId>org.springframework.kafka</groupId>
 		    <artifactId>spring-kafka-test</artifactId>
