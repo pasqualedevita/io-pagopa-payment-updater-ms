@@ -9,10 +9,23 @@ import it.gov.pagopa.paymentupdater.model.Reminder;
 import lombok.extern.slf4j.Slf4j;
 import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
 @Slf4j
-public class AvroMessageDeserializer implements Deserializer<Reminder> {
+public class AvroMessageDeserializer <T> implements Deserializer {
 
 	JsonLoader schema;
 	ObjectMapper mapper;
+	JsonAvroConverter converter;
+
+	public JsonAvroConverter getConverter() {
+		return converter;
+	}
+
+
+
+	public void setConverter(JsonAvroConverter converter) {
+		this.converter = converter;
+	}
+
+
 
 	public AvroMessageDeserializer(JsonLoader jsSchema, ObjectMapper objMapper) {
 		schema = jsSchema;
@@ -34,8 +47,8 @@ public class AvroMessageDeserializer implements Deserializer<Reminder> {
 			}
 
 		}
-			
-			return returnObject;
-		}
 
+		return returnObject;
 	}
+
+}
