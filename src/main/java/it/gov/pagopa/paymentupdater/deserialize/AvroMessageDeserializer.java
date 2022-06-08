@@ -19,8 +19,6 @@ public class AvroMessageDeserializer <T> implements Deserializer {
 		return converter;
 	}
 
-
-
 	public void setConverter(JsonAvroConverter converter) {
 		this.converter = converter;
 	}
@@ -35,7 +33,6 @@ public class AvroMessageDeserializer <T> implements Deserializer {
 	@Override
 	public Reminder deserialize(String topic, byte[] bytes) {	
 		Reminder returnObject = null;
-		JsonAvroConverter converter = new JsonAvroConverter();
 		if (bytes != null) {
 			try {
 				byte[] binaryJson = converter.convertToJson(bytes, schema.getJsonString());
