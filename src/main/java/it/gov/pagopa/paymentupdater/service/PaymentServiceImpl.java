@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -38,8 +39,11 @@ public class PaymentServiceImpl implements PaymentService {
 	@Value("${kafka.paymentupdates}")
 	private String topic;
 	
+	@Autowired
+	PaymentProducer producer;
 	
 	@Autowired
+	@Qualifier("kafkaTemplatePayments")
 	private KafkaTemplate<String, String> kafkaTemplatePayments;
 	
 	@Override
@@ -51,22 +55,6 @@ public class PaymentServiceImpl implements PaymentService {
 	public void save(Reminder reminder) {
 		paymentRepository.save(reminder);
 		log.info("Saved payment id: {}", reminder.getId());
-	}
-
-	@Override
-	public void updateReminder(String messageId, boolean read, boolean paid) {
-			Reminder paymentToUpdate = findById(messageId);
-			if(null != paymentToUpdate) {
-				paymentToUpdate.setReadFlag(read);	
-				paymentToUpdate.setPaidFlag(paid);
-				save(paymentToUpdate);	
-				log.info("Update payment id: {}", messageId);
-			}
-	}
-	
-	@Override
-	public Reminder findById(String id) {
-		return paymentRepository.findById(id).orElse(null);
 	}
 
 	@Override
@@ -89,8 +77,6 @@ public class PaymentServiceImpl implements PaymentService {
 					message.setNoticeNumber(reminder.getContent_paymentData_noticeNumber());
 					message.setPayeeFiscalCode(reminder.getContent_paymentData_payeeFiscalCode());
 					message.setSource("payments");
-					kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider.getBean("kafkaTemplatePayments");
-					PaymentProducer producer = new PaymentProducer();
 					producer.sendReminder(message, kafkaTemplatePayments, mapper, topic);
 					map.put("isPaid", true);
 				}

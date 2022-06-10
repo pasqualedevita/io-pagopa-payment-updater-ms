@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import lombok.extern.slf4j.Slf4j;
+import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
 
 
 @Slf4j
 public class PaymentRootDeserializer implements Deserializer<PaymentRoot> {
 	
 	ObjectMapper mapper;
-
+	
 	public PaymentRootDeserializer(ObjectMapper mapper) {
 		this.mapper = mapper;
 	}

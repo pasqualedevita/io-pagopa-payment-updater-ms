@@ -1,6 +1,7 @@
 package it.gov.pagopa.paymentupdater;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +16,20 @@ import org.springframework.web.client.RestTemplate;
 
 import it.gov.pagopa.paymentupdater.dto.PaymentMessage;
 import it.gov.pagopa.paymentupdater.dto.avro.MessageContentType;
+import it.gov.pagopa.paymentupdater.dto.payments.Creditor;
+import it.gov.pagopa.paymentupdater.dto.payments.Debtor;
+import it.gov.pagopa.paymentupdater.dto.payments.DebtorPosition;
+import it.gov.pagopa.paymentupdater.dto.payments.Payer;
+import it.gov.pagopa.paymentupdater.dto.payments.PaymentInfo;
+import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
+import it.gov.pagopa.paymentupdater.dto.payments.Psp;
+import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.paymentupdater.model.Reminder;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
 import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 
 
-public class AbstractTest {
+public class AbstractMock {
 
 	private static final String EMPTY = "empty";
 	private static final String FULL = "full";
@@ -48,6 +57,10 @@ public class AbstractTest {
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
 		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
+	}
+	
+	public void mockGetPaymentByNoticeNumber(Reminder reminder) {
+		Mockito.when(mockRepository.getPaymentByNoticeNumber(Mockito.anyString())).thenReturn(reminder);
 	}
 
 	protected List<Reminder>  selectListReminderMockObject(String type) {
@@ -107,6 +120,19 @@ public class AbstractTest {
 
 		return paymentMessage;
 	}
+	
+	protected ProxyPaymentResponse getProxyResponse() {
+    	ProxyPaymentResponse paymentResponse = new ProxyPaymentResponse();
+    	paymentResponse.setCodiceContestoPagamento("");
+    	paymentResponse.setImportoSingoloVersamento("20");
+    	paymentResponse.setDetail_v2("PPT_RPT_DUPLICATA");
+    	paymentResponse.setDetail("");
+    	paymentResponse.setInstance("");
+    	paymentResponse.setStatus(500);
+    	paymentResponse.setType("");
+    	paymentResponse.setTitle("");
+    	return paymentResponse;
+	}
 
 	protected PaymentMessage getPaymentMessage(String noticeNumber, String fiscalCode, boolean paid, LocalDate d, Double amount, String source) {
 
@@ -114,6 +140,50 @@ public class AbstractTest {
 		return pm;
 	}
 
+	protected String getPaymentRoot() {
+		PaymentRoot pr = new PaymentRoot();
+		Creditor creditor = new Creditor();
+		DebtorPosition debtorPosition = new DebtorPosition();
+		Payer payer = new Payer();
+		PaymentInfo info = new PaymentInfo();
+		Psp psp = new Psp();
+		creditor.setIdPA("test");
+		pr.setCreditor(creditor);
+		Debtor debtor = new Debtor();
+		debtor.setFullName("test");
+		pr.setDebtor(debtor);
+		pr.setComplete("test");
+		debtorPosition.setNoticeNumber("A1234");
+		pr.setDebtorPosition(debtorPosition);
+		pr.setMissingInfo(new ArrayList<>());
+		pr.setIdPaymentManager("1234");
+		psp.setIdChannel("1234");
+		psp.setPsp("test");
+		pr.setPsp(psp);
+		pr.setUuid("123");
+		pr.setVersion("");	
+		info.setAmount("123");
+		info.setDueDate("9999/12/31");
+		info.setFee("123");
+		pr.setPaymentInfo(info);	
+		payer.setFullName("test");
+		payer.setEntityUniqueIdentifierValue("");
+		payer.setEntityUniqueIdentifierType("");
+		pr.setPayer(payer);
+		return pr.toString();
+	}
+	
+	protected Reminder getTestReminder() {
+		Reminder reminder = new Reminder();
+		reminder.setReadFlag(true);
+		reminder.setDateReminder(new ArrayList<>());
+		reminder.setLastDateReminder(LocalDateTime.now());
+		reminder.setMaxPaidMessageSend(10);
+		reminder.setReadDate(LocalDateTime.now());
+		reminder.setMaxReadMessageSend(10);
+		return reminder;
+	}
+	
 	protected void before() {
 		service = new PaymentServiceImpl();
 	}

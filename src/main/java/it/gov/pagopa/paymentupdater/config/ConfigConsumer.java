@@ -22,6 +22,7 @@ import it.gov.pagopa.paymentupdater.deserialize.PaymentRootDeserializer;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.model.JsonLoader;
 import it.gov.pagopa.paymentupdater.model.Reminder;
+import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
 
 
 @EnableKafka
@@ -56,14 +57,16 @@ public class ConfigConsumer extends ConfigKafka{
 		ConcurrentKafkaListenerContainerFactory<String, Reminder> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		Map<String, Object> props = createProps(urlMessage, serverMessage);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, AvroMessageDeserializer.class.getName());
-		DefaultKafkaConsumerFactory<String, Reminder> dkc = new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new AvroMessageDeserializer(messageSchema, mapper));
+		AvroMessageDeserializer deserializer = new AvroMessageDeserializer(messageSchema, mapper);
+		deserializer.setConverter(new JsonAvroConverter());
+		DefaultKafkaConsumerFactory<String, Reminder> dkc = new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), deserializer);
 		factory.setConsumerFactory(dkc);
 		return factory;
 	}
 	
 	
 	@Bean
-	public ConcurrentKafkaListenerContainerFactory<String, PaymentRoot> kafkaListenerContainerFactoryPaymentRoot(@Autowired @Qualifier("messageStatusSchema") JsonLoader messagesStatusSchema) {
+	public ConcurrentKafkaListenerContainerFactory<String, PaymentRoot> kafkaListenerContainerFactoryPaymentRoot() {
 		ConcurrentKafkaListenerContainerFactory<String, PaymentRoot> factoryStatus = new ConcurrentKafkaListenerContainerFactory<>();
 		Map<String, Object> props = createProps(urlPayment, serverPayment);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, BytesDeserializer.class);

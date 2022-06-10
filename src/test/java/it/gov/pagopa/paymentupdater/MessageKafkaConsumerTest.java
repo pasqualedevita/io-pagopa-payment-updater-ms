@@ -1,5 +1,7 @@
 package it.gov.pagopa.paymentupdater;
 
+import java.time.LocalDate;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -19,10 +21,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.gov.pagopa.paymentupdater.Application;
 import it.gov.pagopa.paymentupdater.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.paymentupdater.consumer.PaymentKafkaConsumer;
-import it.gov.pagopa.paymentupdater.dto.avro.MessageContentType;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
@@ -34,10 +34,10 @@ import it.gov.pagopa.paymentupdater.util.ApplicationContextProvider;
 @Import(it.gov.pagopa.paymentupdater.KafkaTestContainersConfiguration.class)
 @DirtiesContext
 @EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9093", "port=9093" })
-public class MessageKafkaConsumerTest extends AbstractTest{
+public class MessageKafkaConsumerTest extends AbstractMock{
 	
-//    @Autowired
-//    private PaymentProducer producer;
+    @Autowired
+    private PaymentProducer producer;
     
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -54,7 +54,6 @@ public class MessageKafkaConsumerTest extends AbstractTest{
 	@Autowired
 	ObjectMapper mapper;
 	
-	
 	@Value("${kafka.paymentupdates}")
 	private String producerTopic;
 
@@ -63,18 +62,14 @@ public class MessageKafkaConsumerTest extends AbstractTest{
     public void setUp() {
     	before();
     }
-//    
-//	@Test
-//	public void test_scheduleMockSchedulerNotifyIntegrationTest2_OK() throws InterruptedException, JsonProcessingException {
-//		Mockito.when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR).internalServerError().body("{}"));
-//		kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
-//		producer.sendReminder(new PaymentMessage("","", true, LocalDate.now(), 1d,""), kafkaTemplate, mapper, producerTopic);
-////		consumer.getLatch().await(10000, TimeUnit.MILLISECONDS);
-////        assertThat(consumer.getLatch().getCount(), equalTo(0L));
-////        assertThat(consumer.getPayload(), containsString("embedded-test-topic"));
-//		Assertions.assertTrue(true);
-//	}
 	
+    @Test
+    public void test_producerKafica_Ok() throws JsonProcessingException {
+    	kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
+    	producer.sendReminder(selectPaymentMessageObject("", "2121", "AAABBB77Y66A444A", false, LocalDate.now(), 0.0, "test"), kafkaTemplate, mapper, "payment-updates");
+    	Assertions.assertTrue(true);
+    }
+    
 	@Test
 	public void test_messageEventKafkaConsumer_GENERIC_OK() throws InterruptedException, JsonProcessingException {
 		messageKafkaConsumer = (MessageKafkaConsumer) ApplicationContextProvider.getBean("messageEventKafkaConsumer");

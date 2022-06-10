@@ -16,7 +16,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder
 @NoArgsConstructor
 @ToString
 public class PaymentMessage {
