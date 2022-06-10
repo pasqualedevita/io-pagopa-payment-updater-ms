@@ -6,10 +6,13 @@ import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.EnableKafka;  
+import org.springframework.kafka.annotation.EnableKafka;
+
+import lombok.extern.log4j.Log4j2;  
 
 @EnableKafka
 @Configuration
+@Log4j2
 public class ConfigKafka extends BeanConf{	
 
 	private static final String ID_CONFIG = "PaymentUpdaterConsumer";
@@ -23,7 +26,7 @@ public class ConfigKafka extends BeanConf{
 			props.put("value.deserializer.specific.avro.reader", "true") ;
 			props.put("spring.kafka.consumer.properties.specific.avro.reader", "true") ;
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return props;
 	}

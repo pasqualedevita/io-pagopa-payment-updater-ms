@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +24,6 @@ import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.paymentupdater.model.Reminder;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
-import it.gov.pagopa.paymentupdater.util.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -62,7 +62,9 @@ public class PaymentServiceImpl implements PaymentService {
 		Map<String, Boolean> map = new HashMap<>();
 		map.put("isPaid", false);
 		try {
-			restTemplate.getForEntity(urlProxy.concat(noticeNumber), ProxyPaymentResponse.class);		
+			String url = urlProxy.concat("%s");
+			url = String.format(url, noticeNumber);
+			restTemplate.getForEntity(url, ProxyPaymentResponse.class);		
 			return map;
 		} catch (HttpServerErrorException errorException) {
 			//the reminder is already paid
