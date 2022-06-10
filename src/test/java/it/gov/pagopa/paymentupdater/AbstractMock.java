@@ -24,8 +24,10 @@ import it.gov.pagopa.paymentupdater.dto.payments.PaymentInfo;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.dto.payments.Psp;
 import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
+import it.gov.pagopa.paymentupdater.model.Message;
 import it.gov.pagopa.paymentupdater.model.Reminder;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
+import it.gov.pagopa.paymentupdater.service.PaymentService;
 import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 
 
@@ -43,6 +45,9 @@ public class AbstractMock {
 
 	@MockBean
 	protected PaymentRepository mockRepository;
+	
+	@MockBean
+	protected PaymentService servicePayment;
 
 	@InjectMocks
 	protected PaymentServiceImpl service;
@@ -57,6 +62,11 @@ public class AbstractMock {
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
 		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
+	}
+	
+	public void mockServiceGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
+		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
+		Mockito.when(servicePayment.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
 	}
 	
 	public void mockGetPaymentByNoticeNumber(Reminder reminder) {
@@ -148,9 +158,14 @@ public class AbstractMock {
 		PaymentInfo info = new PaymentInfo();
 		Psp psp = new Psp();
 		creditor.setIdPA("test");
+		creditor.setCompanyName("test");
+		creditor.setIdBrokerPA("");
+		creditor.setIdStation("");
 		pr.setCreditor(creditor);
 		Debtor debtor = new Debtor();
 		debtor.setFullName("test");
+		debtor.setEntityUniqueIdentifierType("");
+		debtor.setEntityUniqueIdentifierValue("");
 		pr.setDebtor(debtor);
 		pr.setComplete("test");
 		debtorPosition.setNoticeNumber("A1234");
@@ -159,16 +174,25 @@ public class AbstractMock {
 		pr.setIdPaymentManager("1234");
 		psp.setIdChannel("1234");
 		psp.setPsp("test");
+		psp.setIdPsp("test");
 		pr.setPsp(psp);
 		pr.setUuid("123");
 		pr.setVersion("");	
 		info.setAmount("123");
 		info.setDueDate("9999/12/31");
 		info.setFee("123");
+		info.setTotalNotice("");
+		info.setApplicationDate("");
+		info.setPaymentDateTime("");
+		info.setPaymentMethod("");
+		info.setPaymentToken("");
+		info.setTouchpoint("");
+		info.setTransferDate("");
 		pr.setPaymentInfo(info);	
 		payer.setFullName("test");
 		payer.setEntityUniqueIdentifierValue("");
 		payer.setEntityUniqueIdentifierType("");
+		
 		pr.setPayer(payer);
 		return pr.toString();
 	}
@@ -181,6 +205,17 @@ public class AbstractMock {
 		reminder.setMaxPaidMessageSend(10);
 		reminder.setReadDate(LocalDateTime.now());
 		reminder.setMaxReadMessageSend(10);
+		reminder.setContent_paymentData_amount(0.0);
+		reminder.setContent_paymentData_invalidAfterDueDate(true);
+		reminder.setContent_paymentData_payeeFiscalCode("");
+		reminder.setContent_subject("");
+		reminder.setCreatedAt(1l);
+		reminder.setPending(false);
+		reminder.setSenderServiceId("");
+		reminder.setTimestamp(1l);
+		reminder.setContent_paymentData_amount(0.0);
+		reminder.setTimeToLiveSeconds(5);
+		reminder.setContent_paymentData_noticeNumber("");
 		return reminder;
 	}
 	
