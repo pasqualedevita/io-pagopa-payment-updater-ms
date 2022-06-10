@@ -13,6 +13,13 @@ public class AvroMessageDeserializer implements Deserializer<Reminder> {
 
 	JsonLoader schema;
 	ObjectMapper mapper;
+	JsonAvroConverter converter;
+
+	public void setConverter(JsonAvroConverter converter) {
+		this.converter = converter;
+	}
+
+
 
 	public AvroMessageDeserializer(JsonLoader jsSchema, ObjectMapper objMapper) {
 		schema = jsSchema;
@@ -22,7 +29,6 @@ public class AvroMessageDeserializer implements Deserializer<Reminder> {
 	@Override
 	public Reminder deserialize(String topic, byte[] bytes) {	
 		Reminder returnObject = null;
-		JsonAvroConverter converter = new JsonAvroConverter();
 		if (bytes != null) {
 			try {
 				byte[] binaryJson = converter.convertToJson(bytes, schema.getJsonString());
@@ -34,8 +40,8 @@ public class AvroMessageDeserializer implements Deserializer<Reminder> {
 			}
 
 		}
-			
-			return returnObject;
-		}
 
+		return returnObject;
 	}
+
+}
