@@ -3,6 +3,7 @@ package it.gov.pagopa.paymentupdater.consumer;
 import java.util.concurrent.CountDownLatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,7 +16,6 @@ import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.model.Reminder;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.service.PaymentService;
-import it.gov.pagopa.paymentupdater.util.ApplicationContextProvider;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,7 +25,11 @@ public class PaymentKafkaConsumer {
 	PaymentService paymentService;
 	
 	@Autowired
+	@Qualifier("kafkaTemplatePayments")
 	private KafkaTemplate<String, String> kafkaTemplatePayments;
+	
+	@Autowired
+	PaymentProducer producer;
 	
 	@Autowired
 	ObjectMapper mapper;
@@ -51,8 +55,6 @@ public class PaymentKafkaConsumer {
 		if(reminderToSend != null) {
 			reminderToSend.setPaidFlag(true);
 			paymentService.save(reminderToSend);	
-			kafkaTemplatePayments = (KafkaTemplate<String, String>) ApplicationContextProvider.getBean("kafkaTemplatePayments");
-			PaymentProducer producer = new PaymentProducer();
 			producer.sendReminder(message, kafkaTemplatePayments, mapper, producerTopic);		
 		} else {
 			log.info("Not found reminder in payment data with notice number: {}", message.getNoticeNumber());

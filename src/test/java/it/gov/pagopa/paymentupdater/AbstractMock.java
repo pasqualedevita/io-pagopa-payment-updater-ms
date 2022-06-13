@@ -45,9 +45,6 @@ public class AbstractMock {
 
 	@MockBean
 	protected PaymentRepository mockRepository;
-	
-	@MockBean
-	protected PaymentService servicePayment;
 
 	@InjectMocks
 	protected PaymentServiceImpl service;
@@ -62,11 +59,6 @@ public class AbstractMock {
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
 		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
-	}
-	
-	public void mockServiceGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
-		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
-		Mockito.when(servicePayment.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
 	}
 	
 	public void mockGetPaymentByNoticeNumber(Reminder reminder) {
