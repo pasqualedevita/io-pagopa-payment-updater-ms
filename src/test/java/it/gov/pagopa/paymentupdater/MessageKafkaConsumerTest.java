@@ -23,9 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.paymentupdater.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.paymentupdater.consumer.PaymentKafkaConsumer;
-import it.gov.pagopa.paymentupdater.dto.payments.Creditor;
-import it.gov.pagopa.paymentupdater.dto.payments.DebtorPosition;
-import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 import it.gov.pagopa.paymentupdater.util.ApplicationContextProvider;

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.Rule;
+import org.junit.jupiter.api.Assertions;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
@@ -24,10 +25,8 @@ import it.gov.pagopa.paymentupdater.dto.payments.PaymentInfo;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.dto.payments.Psp;
 import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
-import it.gov.pagopa.paymentupdater.model.Message;
 import it.gov.pagopa.paymentupdater.model.Reminder;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
-import it.gov.pagopa.paymentupdater.service.PaymentService;
 import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 
 
@@ -141,6 +140,10 @@ public class AbstractMock {
 		PaymentMessage pm = new PaymentMessage(noticeNumber, fiscalCode, paid, d, amount, source);
 		return pm;
 	}
+	
+	protected void before() {
+		service = new PaymentServiceImpl();
+	}
 
 	protected String getPaymentRoot() {
 		PaymentRoot pr = new PaymentRoot();
@@ -180,12 +183,27 @@ public class AbstractMock {
 		info.setPaymentToken("");
 		info.setTouchpoint("");
 		info.setTransferDate("");
-		pr.setPaymentInfo(info);	
+		pr.setPaymentInfo(info);		
 		payer.setFullName("test");
 		payer.setEntityUniqueIdentifierValue("");
 		payer.setEntityUniqueIdentifierType("");
-		
 		pr.setPayer(payer);
+		Assertions.assertEquals("test", creditor.getIdPA());
+		Assertions.assertEquals("test", creditor.getCompanyName());
+		Assertions.assertEquals("", creditor.getIdBrokerPA());
+		Assertions.assertEquals("", creditor.getIdStation());
+		Assertions.assertEquals("test", debtor.getFullName());
+		Assertions.assertEquals("", debtor.getEntityUniqueIdentifierType());
+		Assertions.assertEquals("", debtor.getEntityUniqueIdentifierValue());
+		Assertions.assertEquals("A1234", debtorPosition.getNoticeNumber());
+		Assertions.assertEquals("test", pr.getComplete());
+		Assertions.assertEquals("1234", pr.getIdPaymentManager());
+		Assertions.assertEquals("test", pr.getComplete());
+		Assertions.assertEquals("test", psp.getPsp());
+		Assertions.assertEquals("1234", psp.getIdChannel());
+		Assertions.assertEquals("test", psp.getIdPsp());
+		Assertions.assertEquals("test", payer.getFullName());
+		Assertions.assertEquals("123", info.getAmount());
 		return pr.toString();
 	}
 	
@@ -210,9 +228,6 @@ public class AbstractMock {
 		reminder.setContent_paymentData_noticeNumber("");
 		return reminder;
 	}
-	
-	protected void before() {
-		service = new PaymentServiceImpl();
-	}
+
 
 }

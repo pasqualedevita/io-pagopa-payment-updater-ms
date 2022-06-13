@@ -38,7 +38,6 @@ public class PaymentKafkaConsumer {
 	private String producerTopic;
 
 	private CountDownLatch latch = new CountDownLatch(1);
-	 private String payload = null;
 
 	@KafkaListener(topics = "${kafka.payment}", groupId = "consumer-Payment", containerFactory= "kafkaListenerContainerFactoryPaymentRoot")
 	public void paymentKafkaListener(PaymentRoot root) throws JsonProcessingException {
@@ -64,10 +63,6 @@ public class PaymentKafkaConsumer {
 	
     public CountDownLatch getLatch() {
         return latch;
-    }
-
-    public String getPayload() {
-        return payload;
     }
 
 }
