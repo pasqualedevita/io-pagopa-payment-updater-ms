@@ -23,6 +23,13 @@ parameters:
     values:
       - False
       - True
+  # - name: 'environment'
+  #   displayName: 'Force the existing docker image to be replaced'
+  #   type: string
+  #   default: beta
+  #   values:
+  #     - prod
+  #     - beta
 
 # Only manual activations are intended
 trigger: none
@@ -47,22 +54,22 @@ stages:
     jobs:
       - job: 'Build'
         steps:
-          - task: Bash@3
-            displayName: Check Version and Branch
-            inputs:
-              targetType: 'inline'
-              script: |
-                version=$(cat pom.xml | grep '^.*<version>' | sed -n 2p | awk -F'[><]' '{print $3}')
-                branch="$(Build.SourceBranch)"
-                if [[ "$branch" != "refs/heads/master" && ! "$branch" =~ "refs/tags/.*" && "${{ parameters.environment }}" == "prod" ]]; then
-                  echo "Deploy branch $branch is not allowed."
-                  exit 1
-                fi
-                if [[ "$version" == *SNAPSHOT && "${{ parameters.environment }}" == "prod" ]]; then
-                  echo "Version $version is not allowed."
-                  exit 1
-                fi
-              failOnStderr: true
+          # - task: Bash@3
+          #   displayName: Check Version and Branch
+          #   inputs:
+          #     targetType: 'inline'
+          #     script: |
+          #       version=$(cat pom.xml | grep '^.*<version>' | sed -n 2p | awk -F'[><]' '{print $3}')
+          #       branch="$(Build.SourceBranch)"
+          #       if [[ "$branch" != "refs/heads/master" && ! "$branch" =~ "refs/tags/.*" && "${{ parameters.environment }}" == "prod" ]]; then
+          #         echo "Deploy branch $branch is not allowed."
+          #         exit 1
+          #       fi
+          #       if [[ "$version" == *SNAPSHOT && "${{ parameters.environment }}" == "prod" ]]; then
+          #         echo "Version $version is not allowed."
+          #         exit 1
+          #       fi
+          #     failOnStderr: true
 
           - task: Cache@2
             inputs:
