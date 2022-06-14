@@ -3,8 +3,8 @@ microservice-chart:
     repository: 'iopcommonacr.azurecr.io/io-pagopa-payment-updater-ms'
     tag: 'latest'
     pullPolicy: Always
-    # readinessProbePath: '/api/ready'
-    # livenessProbePath: '/api/live'
+    readinessProbePath: '/api/v1/halth/ready'
+    livenessProbePath: '/api/v1/halth/live'
 
   namespace: 'payments'
 
