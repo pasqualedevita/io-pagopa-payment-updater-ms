@@ -1,12 +1,30 @@
 microservice-chart:
+  namespace: 'payments'
+
   image:
     repository: 'iopcommonacr.azurecr.io/io-pagopa-payment-updater-ms'
     tag: 'latest'
     pullPolicy: Always
-    readinessProbePath: '/api/v1/health/ready'
-    livenessProbePath: '/api/v1/health/live'
 
-  namespace: 'payments'
+  livenessProbe:
+    httpGet:
+      path: '/api/v1/health/live'
+      port: 9090
+    initialDelaySeconds: 60
+    failureThreshold: 6
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      path: '/api/v1/health/ready'
+      port: 9090
+    initialDelaySeconds: 60
+    failureThreshold: 6
+    periodSeconds: 10
+
+  service:
+    create: true
+    port: 9090
 
   ingress:
     create: true
