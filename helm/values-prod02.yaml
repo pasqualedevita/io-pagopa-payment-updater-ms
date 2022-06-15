@@ -54,8 +54,7 @@ microservice-chart:
   envConfig:
     # required
     NODE_ENV: 'production'
-    WEBSITE_NODE_DEFAULT_VERSION: '14.16.0'
-    WEBSITE_SITE_NAME: 'io-p-weuprod02-functions-service-payments' # required to show cloud role name in application insights
+    WEBSITE_SITE_NAME: 'io-p-weuprod02-pagopa-payment-updater-ms' # required to show cloud role name in application insights
     # app specific
     BOOTSTRAP_SERVER_MESSAGE: 'io-space-hub-pu-messages.servicebus.windows.net:9093'
     BOOTSTRAP_SERVER_PAYMENT: 'io-space-hub-pu-messages.servicebus.windows.net:9093'
@@ -74,11 +73,11 @@ microservice-chart:
 
   envSecret:
     # required
-    APPLICATIONINSIGHTS_CONNECTION_STRING: 'appinsights-instrumentationkey'
+    APPLICATIONINSIGHTS_CONNECTION_STRING: 'appinsights-connection-string'
     # app specific
     KAFKA_URL_MESSAGE: 'KAFKA-URL-MESSAGE-beta'
     KAFKA_URL_PAYMENT: 'KAFKA-URL-PAYMENT-beta'
-    KAFKA_URL_PAYMENTUPDATES: 'KAFKA-URL-PAYMENTUPDATES-beta'
+    KAFKA_URL_PAYMENTUPDATES: 'io-payment-updater-io-p-reminder-weu-prod01-evh-jaas-connection-string'
     MONGO_DATABASE_URI: 'MONGO-DATABASE-URI-beta'
 
   keyvault:
