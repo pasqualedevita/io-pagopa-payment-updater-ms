@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,6 +20,9 @@ import lombok.ToString;
 @JsonIgnoreProperties
 @Document(collection = "#{@collectionName}")
 @ToString
+@CompoundIndexes({
+    @CompoundIndex(name="uniquePayment", def = "{'content_paymentData_noticeNumber' : 1,'content_paymentData_payeeFiscalCode' : 1}" ,
+    		unique = true, sparse = true)})
 public class Payment extends Message{
 
 	private boolean readFlag;

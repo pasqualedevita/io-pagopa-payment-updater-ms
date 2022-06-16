@@ -32,7 +32,8 @@ public class MessageKafkaConsumer {
 			log.debug("Received message: {} ", reminder);				
 			checkNullInMessage(reminder);
 			payload = reminder.toString();
-			paymentService.save(reminder);	
+			Payment pp = paymentService.getPaymentByNoticeNumberAndFiscalCode(reminder.getContent_paymentData_noticeNumber(), reminder.getContent_paymentData_payeeFiscalCode());
+			if(pp == null) paymentService.save(reminder);	
 		}
 		this.latch.countDown();
 	}

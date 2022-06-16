@@ -2,13 +2,16 @@ package it.gov.pagopa.paymentupdater.service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
+import it.gov.pagopa.paymentupdater.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -38,6 +42,10 @@ public class PaymentServiceImpl implements PaymentService {
 	private String urlProxy;	
 	@Value("${kafka.paymentupdates}")
 	private String topic;
+	@Value("${enable_rest_key}")
+	private boolean enableRestKey;
+	@Value("${proxy_endpoint_subscription_key}")
+	private String proxyEndpointKey ;
 	
 	@Autowired
 	PaymentProducer producer;
@@ -48,7 +56,10 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Override
 	public Payment getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode) {
-		return paymentRepository.getPaymentByNoticeNumberAndFiscalCode(noticeNumber, fiscalCode);
+		
+		List<Payment> listPayment = paymentRepository.getPaymentByNoticeNumberAndFiscalCode(noticeNumber, fiscalCode); 
+		
+		return listPayment.isEmpty() ? null : listPayment.get(0);
 	}
 
 	@Override
@@ -64,7 +75,11 @@ public class PaymentServiceImpl implements PaymentService {
 		try {
 			String url = urlProxy.concat("%s");
 			url = String.format(url, noticeNumber);
-			restTemplate.getForEntity(url, ProxyPaymentResponse.class);		
+			
+			HttpHeaders headers = new HttpHeaders();
+			if(enableRestKey) headers.set(Constants.OCP_APIM_SUB_KEY, proxyEndpointKey);
+			HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
+			restTemplate.exchange(url, HttpMethod.GET, requestEntity, ProxyPaymentResponse.class);				
 			return map;
 		} catch (HttpServerErrorException errorException) {
 			//the reminder is already paid
