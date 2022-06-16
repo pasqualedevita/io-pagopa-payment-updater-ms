@@ -4,13 +4,13 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import it.gov.pagopa.paymentupdater.model.Reminder;
+import it.gov.pagopa.paymentupdater.model.Payment;
 
 public interface PaymentService {
 
-	Reminder getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode);
+	Payment getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode);
 	
-	void save(Reminder reminder);
+	void save(Payment reminder);
 
 	Map<String, Boolean> checkPayment(String noticeNumber) throws JsonProcessingException;
 }

@@ -27,7 +27,7 @@ import it.gov.pagopa.paymentupdater.deserialize.AvroMessageDeserializer;
 import it.gov.pagopa.paymentupdater.deserialize.PaymentRootDeserializer;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.model.JsonLoader;
-import it.gov.pagopa.paymentupdater.model.Reminder;
+import it.gov.pagopa.paymentupdater.model.Payment;
 import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
 
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -68,7 +68,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		avroMessageDeserializer = new AvroMessageDeserializer(messageSchema, mapper);
 		avroMessageDeserializer.setConverter(converter);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		Mockito.when(mapper.readValue(messageSchema.getJsonString(), Reminder.class)).thenReturn(new Reminder());
+		Mockito.when(mapper.readValue(messageSchema.getJsonString(), Payment.class)).thenReturn(new Payment());
 		avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
 		Assertions.assertTrue(true);
 	}

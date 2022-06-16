@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
-import it.gov.pagopa.paymentupdater.model.Reminder;
+import it.gov.pagopa.paymentupdater.model.Payment;
 
 public class PaymentUtil {
 	
@@ -14,7 +14,7 @@ public class PaymentUtil {
 
 	private static final String UNDEFINED = "undefined";
 
-	public static void checkNullInMessage(Reminder reminder) {
+	public static void checkNullInMessage(Payment reminder) {
 		if (Objects.nonNull(reminder)) {
 			if (Objects.isNull(reminder.getInsertionDate())){
 				reminder.setInsertionDate(LocalDateTime.now(ZonedDateTime.now().getZone()));

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.paymentupdater.dto.PaymentMessage;
 import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
-import it.gov.pagopa.paymentupdater.model.Reminder;
+import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -47,12 +47,12 @@ public class PaymentServiceImpl implements PaymentService {
 	private KafkaTemplate<String, String> kafkaTemplatePayments;
 	
 	@Override
-	public Reminder getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode) {
+	public Payment getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode) {
 		return paymentRepository.getPaymentByNoticeNumberAndFiscalCode(noticeNumber, fiscalCode);
 	}
 
 	@Override
-	public void save(Reminder reminder) {
+	public void save(Payment reminder) {
 		paymentRepository.save(reminder);
 		log.info("Saved payment id: {}", reminder.getId());
 	}
@@ -70,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
 			//the reminder is already paid
 			ProxyPaymentResponse res = mapper.readValue(errorException.getResponseBodyAsString(), ProxyPaymentResponse.class);
 			if (res.getDetail_v2().equals("PPT_RPT_DUPLICATA") && errorException.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
-				Reminder reminder = paymentRepository.getPaymentByNoticeNumber(noticeNumber);				
+				Payment reminder = paymentRepository.getPaymentByNoticeNumber(noticeNumber);				
 				if (Objects.nonNull(reminder)) {
 					reminder.setPaidFlag(true);
 					reminder.setPaidDate(LocalDateTime.now());

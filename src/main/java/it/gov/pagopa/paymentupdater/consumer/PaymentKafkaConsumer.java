@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.paymentupdater.dto.PaymentMessage;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
-import it.gov.pagopa.paymentupdater.model.Reminder;
+import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +50,7 @@ public class PaymentKafkaConsumer {
 		message.setPayeeFiscalCode(root.getCreditor() != null ? root.getCreditor().getIdPA() : null);
 		message.setPaid(true);
 			
-		Reminder reminderToSend = paymentService.getPaymentByNoticeNumberAndFiscalCode(message.getNoticeNumber(), message.getPayeeFiscalCode());
+		Payment reminderToSend = paymentService.getPaymentByNoticeNumberAndFiscalCode(message.getNoticeNumber(), message.getPayeeFiscalCode());
 		if(reminderToSend != null) {
 			reminderToSend.setPaidFlag(true);
 			paymentService.save(reminderToSend);	

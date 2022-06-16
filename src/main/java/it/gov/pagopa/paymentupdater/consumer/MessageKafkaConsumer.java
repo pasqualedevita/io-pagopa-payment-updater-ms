@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.paymentupdater.dto.avro.MessageContentType;
-import it.gov.pagopa.paymentupdater.model.Reminder;
+import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.service.PaymentService;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -27,7 +27,7 @@ public class MessageKafkaConsumer {
     private String payload = null;
 
 	@KafkaListener(topics = "${kafka.message}", groupId = "consumer-message")
-	public void messageKafkaListener(Reminder reminder) throws JsonProcessingException {		
+	public void messageKafkaListener(Payment reminder) throws JsonProcessingException {		
 		if(reminder != null && reminder.getContent_type().equals(MessageContentType.PAYMENT)) {		
 			log.debug("Received message: {} ", reminder);				
 			checkNullInMessage(reminder);

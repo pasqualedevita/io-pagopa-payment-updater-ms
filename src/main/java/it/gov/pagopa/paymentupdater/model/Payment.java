@@ -16,9 +16,9 @@ import lombok.ToString;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
 @JsonIgnoreProperties
-@Document
+@Document(collection = "#{@collectionName}")
 @ToString
-public class Reminder extends Message{
+public class Payment extends Message{
 
 	private boolean readFlag;
 	private boolean paidFlag;

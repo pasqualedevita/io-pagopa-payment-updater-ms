@@ -25,7 +25,7 @@ import it.gov.pagopa.paymentupdater.dto.payments.PaymentInfo;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.dto.payments.Psp;
 import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
-import it.gov.pagopa.paymentupdater.model.Reminder;
+import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
 import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 
@@ -48,32 +48,32 @@ public class AbstractMock {
 	@InjectMocks
 	protected PaymentServiceImpl service;
 
-	protected void mockSaveWithResponse(Reminder returnReminder) {
-		Mockito.when(mockRepository.save(Mockito.any(Reminder.class))).thenReturn(returnReminder);
+	protected void mockSaveWithResponse(Payment returnReminder) {
+		Mockito.when(mockRepository.save(Mockito.any(Payment.class))).thenReturn(returnReminder);
 	}
 
-	protected void mockFindIdWithResponse(Reminder returnReminder1) {
+	protected void mockFindIdWithResponse(Payment returnReminder1) {
 		Mockito.when(mockRepository.findById(Mockito.anyString())).thenReturn(Optional.of(returnReminder1));
 	}
 
-	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Reminder reminder) {
+	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Payment reminder) {
 		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
 	}
 	
-	public void mockGetPaymentByNoticeNumber(Reminder reminder) {
+	public void mockGetPaymentByNoticeNumber(Payment reminder) {
 		Mockito.when(mockRepository.getPaymentByNoticeNumber(Mockito.anyString())).thenReturn(reminder);
 	}
 
-	protected List<Reminder>  selectListReminderMockObject(String type) {
-		List<Reminder> retList = null;
-		Reminder returnReminder1 = null;
+	protected List<Payment>  selectListReminderMockObject(String type) {
+		List<Payment> retList = null;
+		Payment returnReminder1 = null;
 
 		switch (type){
 		case EMPTY:
-			retList = new ArrayList<Reminder>();
+			retList = new ArrayList<Payment>();
 			break;
 		case FULL:
-			retList = new ArrayList<Reminder>();
+			retList = new ArrayList<Payment>();
 			returnReminder1 = selectReminderMockObject(type, "1","GENERIC","AAABBB77Y66A444A",3);
 			retList.add(returnReminder1);
 			returnReminder1 = selectReminderMockObject(type, "2","PAYMENT","CCCDDD77Y66A444A",3);
@@ -83,7 +83,7 @@ public class AbstractMock {
 			retList = null;
 			break;
 		default:
-			retList = new ArrayList<Reminder>();
+			retList = new ArrayList<Payment>();
 			break;
 		};
 
@@ -91,14 +91,14 @@ public class AbstractMock {
 
 	}
 
-	protected Reminder selectReminderMockObject(String type, String id, String contentType, String fiscalCode, int numReminder) {
-		Reminder returnReminder1 = null;
+	protected Payment selectReminderMockObject(String type, String id, String contentType, String fiscalCode, int numReminder) {
+		Payment returnReminder1 = null;
 
 		switch (type){
 		case EMPTY:
-			returnReminder1 = new Reminder();
+			returnReminder1 = new Payment();
 		default:
-			returnReminder1 = new Reminder();
+			returnReminder1 = new Payment();
 			returnReminder1.setId(id);
 			returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
 			returnReminder1.setFiscal_code(fiscalCode);
@@ -207,8 +207,8 @@ public class AbstractMock {
 		return pr.toString();
 	}
 	
-	protected Reminder getTestReminder() {
-		Reminder reminder = new Reminder();
+	protected Payment getTestReminder() {
+		Payment reminder = new Payment();
 		reminder.setReadFlag(true);
 		reminder.setDateReminder(new ArrayList<>());
 		reminder.setLastDateReminder(LocalDateTime.now());

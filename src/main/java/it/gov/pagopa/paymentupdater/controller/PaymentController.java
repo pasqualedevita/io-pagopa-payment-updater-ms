@@ -33,5 +33,5 @@ public class PaymentController {
     public ResponseEntity<Object> checkAssistenza(@PathVariable String noticeNumber) throws JsonProcessingException { 	
       	return new ResponseEntity<>(paymentService.checkPayment(noticeNumber), HttpStatus.OK);
     }
-
+ 
 }
