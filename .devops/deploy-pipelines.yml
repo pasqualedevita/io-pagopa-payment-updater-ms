@@ -194,3 +194,17 @@ stages:
                     install: true
                     waitForExecution: true
                     arguments: '--timeout 5m0s'
+                - task: HelmDeploy@0
+                  displayName: Helm upgrade
+                  inputs:
+                    kubernetesServiceEndpoint: io-payments-aks-weu-prod01
+                    namespace: $(NAMESPACE)
+                    command: upgrade
+                    chartType: filepath
+                    chartPath: $(Pipeline.Workspace)/helm
+                    chartName: $(DOCKER_IMAGE)
+                    releaseName: $(DOCKER_IMAGE)
+                    valueFile: '$(Pipeline.Workspace)/helm/values-prod01.yaml'
+                    install: true
+                    waitForExecution: true
+                    arguments: '--timeout 5m0s'
