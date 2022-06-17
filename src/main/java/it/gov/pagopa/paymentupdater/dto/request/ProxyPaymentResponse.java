@@ -1,11 +1,9 @@
 package it.gov.pagopa.paymentupdater.dto.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter @Setter
 public class ProxyPaymentResponse {
 	
 	private String importoSingoloVersamento;
