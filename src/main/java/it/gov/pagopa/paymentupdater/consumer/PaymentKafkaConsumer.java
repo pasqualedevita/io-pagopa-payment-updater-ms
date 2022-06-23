@@ -52,8 +52,11 @@ public class PaymentKafkaConsumer {
 			
 		Payment reminderToSend = paymentService.getPaymentByNoticeNumberAndFiscalCode(message.getNoticeNumber(), message.getPayeeFiscalCode());
 		if(reminderToSend != null) {
+			
 			reminderToSend.setPaidFlag(true);
-			paymentService.save(reminderToSend);	
+			paymentService.save(reminderToSend);
+			
+			message.setMessageId(reminderToSend.getId());
 			producer.sendReminder(message, kafkaTemplatePayments, mapper, producerTopic);		
 		} else {
 			log.info("Not found reminder in payment data with notice number: {}", message.getNoticeNumber());

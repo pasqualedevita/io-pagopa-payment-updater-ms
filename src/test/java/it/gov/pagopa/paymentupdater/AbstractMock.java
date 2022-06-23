@@ -57,11 +57,13 @@ public class AbstractMock {
 	}
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Payment reminder) {
-		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(reminder);
+		List<Payment> listPayment = new ArrayList<>();
+		listPayment.add(reminder);
+		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(listPayment);
 	}
 	
 	public void mockGetPaymentByNoticeNumber(Payment reminder) {
-		Mockito.when(mockRepository.getPaymentByNoticeNumber(Mockito.anyString())).thenReturn(reminder);
+		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(reminder);
 	}
 
 	protected List<Payment>  selectListReminderMockObject(String type) {
@@ -109,14 +111,14 @@ public class AbstractMock {
 
 	}
 
-	protected PaymentMessage selectPaymentMessageObject(String type, String noticeNumber, String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source) {
+	protected PaymentMessage selectPaymentMessageObject(String type, String messageId, String noticeNumber, String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source) {
 		PaymentMessage paymentMessage = null;
 
 		switch (type){
 			case EMPTY:
 				paymentMessage = new PaymentMessage();
 			default:
-				paymentMessage = new PaymentMessage(noticeNumber, payeeFiscalCode, paid, dueDate, amount, source);
+				paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source);
 		};
 
 		return paymentMessage;
@@ -135,9 +137,9 @@ public class AbstractMock {
     	return paymentResponse;
 	}
 
-	protected PaymentMessage getPaymentMessage(String noticeNumber, String fiscalCode, boolean paid, LocalDate d, Double amount, String source) {
+	protected PaymentMessage getPaymentMessage(String messageId, String noticeNumber, String fiscalCode, boolean paid, LocalDate d, Double amount, String source) {
 
-		PaymentMessage pm = new PaymentMessage(noticeNumber, fiscalCode, paid, d, amount, source);
+		PaymentMessage pm = new PaymentMessage(messageId, noticeNumber, fiscalCode, paid, d, amount, source);
 		return pm;
 	}
 	

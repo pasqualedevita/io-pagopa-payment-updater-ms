@@ -86,7 +86,6 @@ steps:
         $(Build.BuildId)
         latest
         $(getpomversion.outputpomversion)
-
   - task: AzureRMWebAppDeployment@4
     displayName: Azure App Service Deploy
     inputs:

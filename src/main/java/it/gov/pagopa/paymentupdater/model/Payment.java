@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,5 +32,6 @@ public class Payment extends Message{
 	private int maxPaidMessageSend;
 	private LocalDateTime readDate;
 	private LocalDateTime paidDate;
+	private String rptId;
 
 }

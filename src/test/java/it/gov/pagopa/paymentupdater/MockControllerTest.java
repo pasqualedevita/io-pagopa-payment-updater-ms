@@ -8,12 +8,15 @@ import java.nio.charset.Charset;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -71,7 +74,12 @@ public class MockControllerTest extends AbstractMock {
 		mockGetPaymentByNoticeNumber(getTestReminder());
 		mockSaveWithResponse(getTestReminder());
     	HttpServerErrorException errorResponse = new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "", mapper.writeValueAsString(getProxyResponse()).getBytes(), Charset.defaultCharset());	   	
-    	Mockito.when(restTemplate.getForEntity(Mockito.anyString(), Mockito.any())).thenThrow(errorResponse);
+        Mockito.when(restTemplate.exchange(
+                ArgumentMatchers.anyString(),
+                ArgumentMatchers.any(HttpMethod.class),
+                ArgumentMatchers.any(HttpEntity.class),
+                ArgumentMatchers.<Class<String>>any())
+        ).thenThrow(errorResponse);
     	callProxy();
     }
 
