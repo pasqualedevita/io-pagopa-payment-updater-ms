@@ -14,6 +14,6 @@ public interface PaymentRepository extends MongoRepository<Payment, String>{
 	@Query("{'content_paymentData_noticeNumber':?0, 'content_paymentData_payeeFiscalCode':?1}")
 	List<Payment> getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode);
 	
-	@Query("{'content_paymentData_noticeNumber':?0}")
-	Payment getPaymentByNoticeNumber(String noticeNumber);
+	@Query("{'rptId':?0}")
+	Payment getPaymentByRptId(String rptId);
 }

@@ -20,9 +20,6 @@ import lombok.ToString;
 @JsonIgnoreProperties
 @Document(collection = "#{@collectionName}")
 @ToString
-@CompoundIndexes({
-    @CompoundIndex(name="uniquePayment", def = "{'content_paymentData_noticeNumber' : 1,'content_paymentData_payeeFiscalCode' : 1}" ,
-    		unique = true, sparse = true)})
 public class Payment extends Message{
 
 	private boolean readFlag;
@@ -35,5 +32,6 @@ public class Payment extends Message{
 	private int maxPaidMessageSend;
 	private LocalDateTime readDate;
 	private LocalDateTime paidDate;
+	private String rptId;
 
 }

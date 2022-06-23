@@ -2,6 +2,8 @@ package it.gov.pagopa.paymentupdater.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,9 +31,19 @@ public class PaymentController {
 	@Autowired
 	PaymentService paymentService;
 	
-    @GetMapping(value = "/check/{noticeNumber}")
-    public ResponseEntity<Object> checkAssistenza(@PathVariable String noticeNumber) throws JsonProcessingException { 	
-      	return new ResponseEntity<>(paymentService.checkPayment(noticeNumber), HttpStatus.OK);
+    @GetMapping(value = "/check/{rptId}")
+    public ResponseEntity<Object> checkProxy(@PathVariable(required = true) String rptId) throws JsonProcessingException { 	
+      	return new ResponseEntity<>(paymentService.checkPayment(rptId), HttpStatus.OK);
+    }
+    
+    @GetMapping(value = "/check/messages/{messageId}")
+    public ResponseEntity<Object> isMessagePaid(@PathVariable String messageId) { 	
+    	Map<String, Boolean> pay = paymentService.findById(messageId);
+    	if(!pay.isEmpty()) {
+    		return new ResponseEntity<>(pay, HttpStatus.OK);
+    	} else {
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
     }
  
 }

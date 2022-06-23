@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -69,12 +70,12 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public Map<String, Boolean> checkPayment(String noticeNumber) throws JsonProcessingException {
+	public Map<String, Boolean> checkPayment(String rptId) throws JsonProcessingException {
 		Map<String, Boolean> map = new HashMap<>();
 		map.put("isPaid", false);
 		try {
 			String url = urlProxy.concat("%s");
-			url = String.format(url, noticeNumber);
+			url = String.format(url, rptId);
 			
 			HttpHeaders headers = new HttpHeaders();
 			if(enableRestKey) headers.set(Constants.OCP_APIM_SUB_KEY, proxyEndpointKey);
@@ -85,7 +86,7 @@ public class PaymentServiceImpl implements PaymentService {
 			//the reminder is already paid
 			ProxyPaymentResponse res = mapper.readValue(errorException.getResponseBodyAsString(), ProxyPaymentResponse.class);
 			if (res.getDetail_v2().equals("PPT_RPT_DUPLICATA") && errorException.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR)) {
-				Payment reminder = paymentRepository.getPaymentByNoticeNumber(noticeNumber);				
+				Payment reminder = paymentRepository.getPaymentByRptId(rptId);				
 				if (Objects.nonNull(reminder)) {
 					reminder.setPaidFlag(true);
 					reminder.setPaidDate(LocalDateTime.now());
@@ -102,6 +103,18 @@ public class PaymentServiceImpl implements PaymentService {
 				throw errorException;
 			}
 		}
+	}
+
+	@Override
+	public Map<String, Boolean> findById(String messageId) {
+		
+		Optional<Payment> optPay = paymentRepository.findById(messageId);
+		Map<String, Boolean> map = new HashMap<>();
+		if(optPay.isPresent()) {
+			Payment pay = optPay.get();
+			map.put("isPaid", pay.isPaidFlag());	
+		} 
+		return map;
 	}
 	
 	
