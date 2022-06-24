@@ -2,7 +2,6 @@ package it.gov.pagopa.paymentupdater;
 
 import java.time.LocalDate;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -24,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.paymentupdater.consumer.MessageKafkaConsumer;
 import it.gov.pagopa.paymentupdater.consumer.PaymentKafkaConsumer;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
-import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 import it.gov.pagopa.paymentupdater.util.ApplicationContextProvider;
 
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -47,9 +45,6 @@ public class MessageKafkaConsumerTest extends AbstractMock{
     @InjectMocks
     PaymentKafkaConsumer paymentEventKafkaConsumer;
     
-    @InjectMocks
-    PaymentServiceImpl paymentService;
-    
 	@Autowired
 	ObjectMapper mapper;
 	
@@ -57,12 +52,8 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 	private String producerTopic;
 
 	
-    @Before
-    public void setUp() {
-    	before();
-    }
-	
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void test_producerKafica_Ok() throws JsonProcessingException {
     	kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
     	producer.sendReminder(selectPaymentMessageObject("1231", "", "2121", "AAABBB77Y66A444A", false, LocalDate.now(), 0.0, "test"), kafkaTemplate, mapper, "payment-updates");

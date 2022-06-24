@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ import org.springframework.web.client.HttpServerErrorException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import it.gov.pagopa.paymentupdater.controller.PaymentController;
+import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,9 +43,6 @@ public class MockControllerTest extends AbstractMock {
     @Mock
     private PaymentProducer producer;
 		
-	@InjectMocks
-	PaymentController paymentController;
-	
 	@Test
 	public void main() {
 		Application.main(new String[] {});
@@ -61,6 +57,20 @@ public class MockControllerTest extends AbstractMock {
                 .andReturn().getResponse();
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+	}
+	
+	@Test
+	public void callIsMessagePaid() throws Exception {
+		Payment payment = new Payment();
+		mockFindIdWithResponse(payment);
+        // when
+        MockHttpServletResponse response = mvc.perform(
+                get("/api/v1/payment/check/messages/ABC")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    	assertThat(response.getContentAsString()).contains("isPaid");
 	}
 	
 	

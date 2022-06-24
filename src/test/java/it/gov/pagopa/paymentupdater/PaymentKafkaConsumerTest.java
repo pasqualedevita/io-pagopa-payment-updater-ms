@@ -3,7 +3,6 @@ package it.gov.pagopa.paymentupdater;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -28,7 +27,6 @@ import it.gov.pagopa.paymentupdater.dto.payments.DebtorPosition;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
 import it.gov.pagopa.paymentupdater.dto.payments.Transfer;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
-import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 import it.gov.pagopa.paymentupdater.util.ApplicationContextProvider;
 
 @SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,20 +46,11 @@ public class PaymentKafkaConsumerTest extends AbstractMock{
 	@InjectMocks
 	PaymentKafkaConsumer paymentEventKafkaConsumer;
 
-	@InjectMocks
-	PaymentServiceImpl paymentService;
-
 	@Autowired
 	ObjectMapper mapper;
 
 	@Value("${kafka.paymentupdates}")
 	private String producerTopic;
-
-
-	@Before
-	public void setUp() {
-		before();
-	}
 
 	@Test
 	public void test_paymentEventKafkaConsumer_GENERIC_OK() throws InterruptedException, JsonProcessingException {
