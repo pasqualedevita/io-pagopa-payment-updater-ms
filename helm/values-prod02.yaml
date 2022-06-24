@@ -29,8 +29,7 @@ microservice-chart:
   ingress:
     create: true
     host: 'weuprod02.payments.internal.io.pagopa.it'
-    path: '/api/v1/payments-updater/(.*)'
-    rewriteTarget: '/api/v1/payment/$2'
+    path: '/api/v1/payment/(.*)'
 
   resources:
     requests:
