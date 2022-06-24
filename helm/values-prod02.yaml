@@ -30,7 +30,7 @@ microservice-chart:
     create: true
     host: 'weuprod02.payments.internal.io.pagopa.it'
     path: '/api/v1/payments-updater/(.*)'
-    rewriteTarget: '/$2'
+    rewriteTarget: '/api/v1/payment/$2'
 
   resources:
     requests:
