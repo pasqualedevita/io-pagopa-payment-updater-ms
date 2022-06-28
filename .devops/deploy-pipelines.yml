@@ -71,27 +71,6 @@ stages:
           #       fi
           #     failOnStderr: true
 
-          - task: Cache@2
-            inputs:
-              key: 'maven | "$(Agent.OS)" | pom.xml'
-              restoreKeys: |
-                maven | "$(Agent.OS)"
-                maven
-              path: $(MAVEN_CACHE_FOLDER)
-            displayName: Cache Maven local repo
-
-          - task: Maven@3
-            inputs:
-              mavenPomFile: 'pom.xml'
-              mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
-              javaHomeOption: 'JDKVersion'
-              jdkVersionOption: '1.11'
-              jdkArchitectureOption: 'x64'
-              publishJUnitResults: true
-              testResultsFiles: '**/surefire-reports/TEST-*.xml'
-              goals: 'package'
-              sonarQubeRunAnalysis: false
-
           - task: Bash@3
             displayName: Get POM version
             name: getpomversion
