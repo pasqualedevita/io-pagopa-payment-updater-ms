@@ -15,7 +15,7 @@ ARG JAR_FILE=target/*.jar
 
 COPY --from=buildtime /build/target/*.jar application.jar
 
-RUN ls -la target
+# RUN ls -la target
 
 RUN java -Djarmode=layertools -jar application.jar extract
 
