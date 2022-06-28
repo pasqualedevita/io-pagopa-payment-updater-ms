@@ -11,11 +11,8 @@ RUN mvn clean package
 FROM adoptopenjdk/openjdk11:alpine-jre as builder
 
 ARG JAR_FILE=target/*.jar
-# COPY ${JAR_FILE} application.jar
 
 COPY --from=buildtime /build/target/*.jar application.jar
-
-# RUN ls -la target
 
 RUN java -Djarmode=layertools -jar application.jar extract
 
