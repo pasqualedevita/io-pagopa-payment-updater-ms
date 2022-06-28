@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 import it.gov.pagopa.paymentupdater.dto.avro.MessageContentType;
+import it.gov.pagopa.paymentupdater.dto.avro.MessageFeatureLevelType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,6 @@ public class Message {
 	protected String fiscal_code="undefined";
 	@JsonDeserialize(using = LocalDateDeserializer.class)
 	protected LocalDate content_paymentData_dueDate;
+	protected MessageFeatureLevelType featureLevelType;
 	
 }

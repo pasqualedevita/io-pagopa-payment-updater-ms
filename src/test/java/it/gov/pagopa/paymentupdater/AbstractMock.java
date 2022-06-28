@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import it.gov.pagopa.paymentupdater.dto.PaymentMessage;
 import it.gov.pagopa.paymentupdater.dto.avro.MessageContentType;
+import it.gov.pagopa.paymentupdater.dto.avro.MessageFeatureLevelType;
 import it.gov.pagopa.paymentupdater.dto.payments.Creditor;
 import it.gov.pagopa.paymentupdater.dto.payments.Debtor;
 import it.gov.pagopa.paymentupdater.dto.payments.DebtorPosition;
@@ -57,13 +58,14 @@ public abstract class AbstractMock {
 		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(reminder);
 	}
 
-	protected Payment selectReminderMockObject(String type, String id, String contentType, String fiscalCode, int numReminder) {
+	protected Payment selectReminderMockObject(String featureLevel, String type, String id, String contentType, String fiscalCode, int numReminder) {
 		Payment returnReminder1 = null;
 		returnReminder1 = new Payment();
 		returnReminder1.setId(id);
 		returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
 		returnReminder1.setFiscal_code(fiscalCode);
 		returnReminder1.setContent_paymentData_dueDate(LocalDate.now());
+		returnReminder1.setFeatureLevelType(MessageFeatureLevelType.valueOf(featureLevel));
 		return returnReminder1;
 
 	}
