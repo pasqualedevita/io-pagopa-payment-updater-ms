@@ -1,16 +1,36 @@
-version: '2'
-
+version: "3.2"
 services:
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    # volumes:
+    #   - ~/apps/mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+  fixtures:
+    image: fixtures
+    # env_file:
+    #   - ./environments/generated/env.io-fixtures
+    build:
+      context: ../docker/fixtures
+      dockerfile: ./Dockerfile
+    links:
+      - mongodb
   app:
     image: 'microservice:latest'
+    user: 'spring'
     cpus: 1.0
     mem_limit: "3g"
     build:
-      context: .
+      context: ..
     container_name: app
     ports:
       - 9090:9090
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=200MB
-      - JAVA_OPTS=-XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
+      SPRING_PROFILES_ACTIVE: it
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 200MB
+      JAVA_OPTS: -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
+    depends_on:
+      - fixtures

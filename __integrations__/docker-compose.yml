@@ -1,0 +1,55 @@
+version: "3.2"
+services:
+  # mongodb:
+  #   image: mongo
+  #   ports:
+  #     - 27017:27017
+  #   # volumes:
+  #   #   - ~/apps/mongo:/data/db
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: user
+  #     MONGO_INITDB_ROOT_PASSWORD: S3cret
+  # fixtures:
+  #   image: fixtures
+  #   # env_file:
+  #   #   - ./environments/generated/env.io-fixtures
+  #   build:
+  #     context: ../docker/fixtures
+  #     dockerfile: ./Dockerfile
+  #   links:
+  #     - mongodb
+  mongodb:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+    cpus: 2.0
+    ports:
+      - 8081:8081
+      - 10251-10254:10251-10254
+    # volumes:
+    #   - ~/apps/mongo:/data/db
+    environment:
+      AZURE_COSMOS_EMULATOR_PARTITION_COUNT: 1
+      AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: true
+      AZURE_COSMOS_EMULATOR_ENABLE_MONGODB_ENDPOINT: true
+  # fixtures:
+  #   image: fixtures
+  #   # env_file:
+  #   #   - ./environments/generated/env.io-fixtures
+  #   build:
+  #     context: ../docker/fixtures
+  #     dockerfile: ./Dockerfile
+  #   links:
+  #     - mongodb
+  # app:
+  #   image: 'microservice:latest'
+  #   user: 'spring'
+  #   build:
+  #     context: ..
+  #   container_name: app
+  #   ports:
+  #     - 9090:9090
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: it
+  #     SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: 200MB
+  #     JAVA_OPTS: -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+UseStringDeduplication
+  #   depends_on:
+  #     - fixtures
