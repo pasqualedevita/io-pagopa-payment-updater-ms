@@ -2,7 +2,6 @@ package it.gov.pagopa.paymentupdater;
 
 import java.io.IOException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -56,10 +55,6 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	@Qualifier("messageStatusSchema") 
 	JsonLoader messageStatusSchema;
 	
-    @Before
-    public void setUp() {
-    	before();
-    }
  
 	@Test
 	public void test_messageDeserialize_ok() throws JsonMappingException, JsonProcessingException {

@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.Assertions;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
@@ -17,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import it.gov.pagopa.paymentupdater.dto.PaymentMessage;
 import it.gov.pagopa.paymentupdater.dto.avro.MessageContentType;
+import it.gov.pagopa.paymentupdater.dto.avro.MessageFeatureLevelType;
 import it.gov.pagopa.paymentupdater.dto.payments.Creditor;
 import it.gov.pagopa.paymentupdater.dto.payments.Debtor;
 import it.gov.pagopa.paymentupdater.dto.payments.DebtorPosition;
@@ -27,14 +27,9 @@ import it.gov.pagopa.paymentupdater.dto.payments.Psp;
 import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
-import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 
 
-public class AbstractMock {
-
-	private static final String EMPTY = "empty";
-	private static final String FULL = "full";
-	private static final String NULL = "null";
+public abstract class AbstractMock {
 
 	@Rule
 	public MockitoRule rule = MockitoJUnit.rule();
@@ -44,9 +39,6 @@ public class AbstractMock {
 
 	@MockBean
 	protected PaymentRepository mockRepository;
-
-	@InjectMocks
-	protected PaymentServiceImpl service;
 
 	protected void mockSaveWithResponse(Payment returnReminder) {
 		Mockito.when(mockRepository.save(Mockito.any(Payment.class))).thenReturn(returnReminder);
@@ -66,61 +58,21 @@ public class AbstractMock {
 		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(reminder);
 	}
 
-	protected List<Payment>  selectListReminderMockObject(String type) {
-		List<Payment> retList = null;
+	protected Payment selectReminderMockObject(String featureLevel, String type, String id, String contentType, String fiscalCode, int numReminder) {
 		Payment returnReminder1 = null;
-
-		switch (type){
-		case EMPTY:
-			retList = new ArrayList<Payment>();
-			break;
-		case FULL:
-			retList = new ArrayList<Payment>();
-			returnReminder1 = selectReminderMockObject(type, "1","GENERIC","AAABBB77Y66A444A",3);
-			retList.add(returnReminder1);
-			returnReminder1 = selectReminderMockObject(type, "2","PAYMENT","CCCDDD77Y66A444A",3);
-			retList.add(returnReminder1);
-			break;
-		case NULL:
-			retList = null;
-			break;
-		default:
-			retList = new ArrayList<Payment>();
-			break;
-		};
-
-		return retList;
-
-	}
-
-	protected Payment selectReminderMockObject(String type, String id, String contentType, String fiscalCode, int numReminder) {
-		Payment returnReminder1 = null;
-
-		switch (type){
-		case EMPTY:
-			returnReminder1 = new Payment();
-		default:
-			returnReminder1 = new Payment();
-			returnReminder1.setId(id);
-			returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
-			returnReminder1.setFiscal_code(fiscalCode);
-			returnReminder1.setContent_paymentData_dueDate(LocalDate.now());
-		};
-
+		returnReminder1 = new Payment();
+		returnReminder1.setId(id);
+		returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
+		returnReminder1.setFiscal_code(fiscalCode);
+		returnReminder1.setContent_paymentData_dueDate(LocalDate.now());
+		returnReminder1.setFeatureLevelType(MessageFeatureLevelType.valueOf(featureLevel));
 		return returnReminder1;
 
 	}
 
 	protected PaymentMessage selectPaymentMessageObject(String type, String messageId, String noticeNumber, String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source) {
 		PaymentMessage paymentMessage = null;
-
-		switch (type){
-			case EMPTY:
-				paymentMessage = new PaymentMessage();
-			default:
-				paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source);
-		};
-
+		paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source);
 		return paymentMessage;
 	}
 	
@@ -136,17 +88,7 @@ public class AbstractMock {
     	paymentResponse.setTitle("");
     	return paymentResponse;
 	}
-
-	protected PaymentMessage getPaymentMessage(String messageId, String noticeNumber, String fiscalCode, boolean paid, LocalDate d, Double amount, String source) {
-
-		PaymentMessage pm = new PaymentMessage(messageId, noticeNumber, fiscalCode, paid, d, amount, source);
-		return pm;
-	}
 	
-	protected void before() {
-		service = new PaymentServiceImpl();
-	}
-
 	protected String getPaymentRoot() {
 		PaymentRoot pr = new PaymentRoot();
 		Creditor creditor = new Creditor();

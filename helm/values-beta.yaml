@@ -29,7 +29,7 @@ microservice-chart:
   ingress:
     create: true
     host: 'weubeta.payments.internal.io.pagopa.it'
-    path: '/payment-updater/(.*)'
+    path: '/(api/v1/payment/.*)'
 
   resources:
     requests:
