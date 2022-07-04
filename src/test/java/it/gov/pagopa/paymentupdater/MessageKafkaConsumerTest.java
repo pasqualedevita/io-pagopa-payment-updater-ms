@@ -67,7 +67,6 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 		messageKafkaConsumer.messageKafkaListener(selectReminderMockObject("ADVANCED","", "1","PAYMENT","AAABBB77Y66A444A",3));
 		Assertions.assertTrue(messageKafkaConsumer.getPayload().contains("paidFlag=false"));
 		Assertions.assertEquals(0L, messageKafkaConsumer.getLatch().getCount());
-		Assertions.assertTrue(true);
 	}
 }
 

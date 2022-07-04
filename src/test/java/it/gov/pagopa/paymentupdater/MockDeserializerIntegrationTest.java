@@ -56,16 +56,16 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 	JsonLoader messageStatusSchema;
 	
  
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test_messageDeserialize_ok() throws JsonMappingException, JsonProcessingException {
-		String s = "";
-		byte[] byteArrray = s.getBytes();
+		byte[] byteArrray = "".getBytes();
 		avroMessageDeserializer = new AvroMessageDeserializer(messageSchema, mapper);
 		avroMessageDeserializer.setConverter(converter);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
-		Mockito.when(mapper.readValue(messageSchema.getJsonString(), Payment.class)).thenReturn(new Payment());
-		avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
-		Assertions.assertTrue(true);
+		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new Payment());
+		Payment payment = avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
+		Assertions.assertNotNull(payment);
 	}
 	
 	@Test
