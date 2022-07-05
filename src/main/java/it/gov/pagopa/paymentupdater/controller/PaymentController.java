@@ -2,7 +2,7 @@ package it.gov.pagopa.paymentupdater.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.swagger.annotations.Api;
+import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 
@@ -37,9 +38,9 @@ public class PaymentController {
     }
     
     @GetMapping(value = "/check/messages/{messageId}")
-    public ResponseEntity<Object> isMessagePaid(@PathVariable String messageId) { 	
-    	Map<String, Boolean> pay = paymentService.findById(messageId);
-    	if(!pay.isEmpty()) {
+    public ResponseEntity<Payment> isMessagePaid(@PathVariable String messageId) { 	
+    	Payment pay = paymentService.findById(messageId);
+    	if(Objects.nonNull(pay)) {
     		return new ResponseEntity<>(pay, HttpStatus.OK);
     	} else {
     		return new ResponseEntity<>(HttpStatus.NOT_FOUND);

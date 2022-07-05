@@ -28,4 +28,5 @@ public class PaymentMessage {
 	LocalDate dueDate;
 	double amount;
 	String source;
+	String fiscalCode;
 }

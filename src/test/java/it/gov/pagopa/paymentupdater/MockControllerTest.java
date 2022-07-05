@@ -70,7 +70,6 @@ public class MockControllerTest extends AbstractMock {
                 .andReturn().getResponse();
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    	assertThat(response.getContentAsString()).contains("isPaid");
 	}
 	
 	

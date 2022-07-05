@@ -70,9 +70,9 @@ public abstract class AbstractMock {
 
 	}
 
-	protected PaymentMessage selectPaymentMessageObject(String type, String messageId, String noticeNumber, String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source) {
+	protected PaymentMessage selectPaymentMessageObject(String type, String messageId, String noticeNumber, String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source, String fiscalCode) {
 		PaymentMessage paymentMessage = null;
-		paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source);
+		paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source, fiscalCode);
 		return paymentMessage;
 	}
 	

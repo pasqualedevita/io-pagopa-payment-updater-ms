@@ -14,5 +14,5 @@ public interface PaymentService {
 
 	Map<String, Boolean> checkPayment(String rptId) throws JsonProcessingException;
 
-	Map<String, Boolean> findById(String messageId);
+	Payment findById(String messageId);
 }
