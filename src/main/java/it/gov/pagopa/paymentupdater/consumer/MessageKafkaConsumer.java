@@ -35,8 +35,7 @@ public class MessageKafkaConsumer {
 	@KafkaListener(topics = "${kafka.message}", groupId = "consumer-message")
 	public void messageKafkaListener(Payment reminder) throws JsonProcessingException {	
 
-		if(MessageFeatureLevelType.ADVANCED.toString().equalsIgnoreCase(reminder.getFeatureLevelType().toString()) && 
-				reminder.getContent_type().equals(MessageContentType.PAYMENT)) {		
+		if(reminder.getContent_type().equals(MessageContentType.PAYMENT)) {		
 			log.debug("Received message: {} ", reminder);				
 			checkNullInMessage(reminder);
 			payload = reminder.toString();

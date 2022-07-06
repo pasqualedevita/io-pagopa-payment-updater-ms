@@ -63,8 +63,8 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 	@Test
 	public void test_messageEventKafkaConsumer_GENERIC_OK() throws InterruptedException, JsonProcessingException {
 		messageKafkaConsumer = (MessageKafkaConsumer) ApplicationContextProvider.getBean("messageEventKafkaConsumer");
-		mockSaveWithResponse(selectReminderMockObject("ADVANCED","", "1","PAYMENT","AAABBB77Y66A444A",3));
-		messageKafkaConsumer.messageKafkaListener(selectReminderMockObject("ADVANCED","", "1","PAYMENT","AAABBB77Y66A444A",3));
+		mockSaveWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A",3));
+		messageKafkaConsumer.messageKafkaListener(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A",3));
 		Assertions.assertTrue(messageKafkaConsumer.getPayload().contains("paidFlag=false"));
 		Assertions.assertEquals(0L, messageKafkaConsumer.getLatch().getCount());
 	}
