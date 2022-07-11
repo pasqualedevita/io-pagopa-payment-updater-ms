@@ -106,15 +106,14 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public Map<String, Boolean> findById(String messageId) {
+	public Payment findById(String messageId) {
 		
 		Optional<Payment> optPay = paymentRepository.findById(messageId);
-		Map<String, Boolean> map = new HashMap<>();
+		Payment pay = new Payment();
 		if(optPay.isPresent()) {
-			Payment pay = optPay.get();
-			map.put("isPaid", pay.isPaidFlag());	
+			pay = optPay.get();	
 		} 
-		return map;
+		return pay;
 	}
 	
 	

@@ -59,10 +59,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  isPaid:
-                    type: boolean
+                $ref: '#/components/schemas/Payment'
           description: 'check if the message has been paid'
         '404':
           $ref: '#/components/responses/404NotFound'
@@ -76,6 +73,77 @@ paths:
           $ref: '#/components/responses/default'
 components:
   schemas:
+    Payment:
+      type: object
+      properties:
+        readFlag:
+          type: boolean
+        paidFlag:
+          type: boolean
+        insertionDate:
+          type: string
+          format: LocalDateTime
+        dateReminder:
+          type: array
+          items:
+            type: string
+            format: LocalDateTime
+        lastDateReminder:
+          type: string
+          format: LocalDateTime
+        maxReadMessageSend:
+          type: integer
+        maxPaidMessageSend:
+          type: integer
+        readDate:
+          type: string
+          format: LocalDateTime
+        paidDate:
+          type: string
+          format: LocalDateTime
+        rptId:
+          type: string
+        message:
+          type: object
+          items:
+              $ref: '#/components/schemas/Message'
+    Message:
+      properties:
+        id:
+          type: string
+        senderServiceId:
+          type: string
+        senderUserId:
+          type: string
+        timeToLiveSeconds:
+          type: integer
+        createdAt:
+          type: number
+        isPending:
+          type: boolean
+        content_subject:
+          type: string
+        content_type:
+          type: string
+          enum: [GENERIC, PAYMENT, EU_COVID_CERT, LEGAL]
+        double content_paymentData_amount:
+          type: number
+        content_paymentData_noticeNumber:
+          type: string
+        content_paymentData_invalidAfterDueDate:
+          type: boolean
+        content_paymentData_payeeFiscalCode:
+          type: string
+        timestamp:
+          type: number
+        fiscal_code:
+          type: string
+        content_paymentData_dueDate:
+          type: string
+          format: LocalDate
+        featureLevelType:
+          type: string
+          enum: [STANDARD, ADVANCED]
     Problem:
       properties:
         timestamp:

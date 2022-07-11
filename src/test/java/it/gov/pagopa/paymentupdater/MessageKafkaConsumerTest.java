@@ -56,18 +56,17 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 	@Test
     public void test_producerKafica_Ok() throws JsonProcessingException {
     	kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
-    	producer.sendReminder(selectPaymentMessageObject("1231", "", "2121", "AAABBB77Y66A444A", false, LocalDate.now(), 0.0, "test"), kafkaTemplate, mapper, "payment-updates");
+    	producer.sendReminder(selectPaymentMessageObject("1231", "", "2121", "AAABBB77Y66A444A", false, LocalDate.now(), 0.0, "test", "BBBPPP77J99A888A"), kafkaTemplate, mapper, "payment-updates");
     	Assertions.assertTrue(true);
     }
     
 	@Test
 	public void test_messageEventKafkaConsumer_GENERIC_OK() throws InterruptedException, JsonProcessingException {
 		messageKafkaConsumer = (MessageKafkaConsumer) ApplicationContextProvider.getBean("messageEventKafkaConsumer");
-		mockSaveWithResponse(selectReminderMockObject("ADVANCED","", "1","PAYMENT","AAABBB77Y66A444A",3));
-		messageKafkaConsumer.messageKafkaListener(selectReminderMockObject("ADVANCED","", "1","PAYMENT","AAABBB77Y66A444A",3));
+		mockSaveWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A",3));
+		messageKafkaConsumer.messageKafkaListener(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A",3));
 		Assertions.assertTrue(messageKafkaConsumer.getPayload().contains("paidFlag=false"));
 		Assertions.assertEquals(0L, messageKafkaConsumer.getLatch().getCount());
-		Assertions.assertTrue(true);
 	}
 }
 

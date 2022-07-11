@@ -56,6 +56,7 @@ public class PaymentKafkaConsumer {
 			reminderToSend.setPaidFlag(true);
 			paymentService.save(reminderToSend);
 			
+			message.setFiscalCode(reminderToSend.getFiscal_code());
 			message.setMessageId(reminderToSend.getId());
 			producer.sendReminder(message, kafkaTemplatePayments, mapper, producerTopic);		
 		} else {

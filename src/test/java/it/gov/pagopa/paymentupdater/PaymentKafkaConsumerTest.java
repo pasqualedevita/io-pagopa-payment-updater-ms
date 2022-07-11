@@ -55,8 +55,8 @@ public class PaymentKafkaConsumerTest extends AbstractMock{
 	@Test
 	public void test_paymentEventKafkaConsumer_GENERIC_OK() throws InterruptedException, JsonProcessingException {
 		paymentEventKafkaConsumer = (PaymentKafkaConsumer) ApplicationContextProvider.getBean("paymentEventKafkaConsumer");
-		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("ADVANCED","", "1","PAYMENT","AAABBB77Y66A444A",3));
-		mockSaveWithResponse(selectReminderMockObject("ADVANCED","", "1","GENERIC","AAABBB77Y66A444A",3));
+		mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(selectReminderMockObject("", "1","PAYMENT","AAABBB77Y66A444A",3));
+		mockSaveWithResponse(selectReminderMockObject("", "1","GENERIC","AAABBB77Y66A444A",3));
 		PaymentRoot root = new PaymentRoot();
 
 		List<Transfer> transferList = new ArrayList<Transfer>();

@@ -58,21 +58,20 @@ public abstract class AbstractMock {
 		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(reminder);
 	}
 
-	protected Payment selectReminderMockObject(String featureLevel, String type, String id, String contentType, String fiscalCode, int numReminder) {
+	protected Payment selectReminderMockObject(String type, String id, String contentType, String fiscalCode, int numReminder) {
 		Payment returnReminder1 = null;
 		returnReminder1 = new Payment();
 		returnReminder1.setId(id);
 		returnReminder1.setContent_type(MessageContentType.valueOf(contentType));
 		returnReminder1.setFiscal_code(fiscalCode);
 		returnReminder1.setContent_paymentData_dueDate(LocalDate.now());
-		returnReminder1.setFeatureLevelType(MessageFeatureLevelType.valueOf(featureLevel));
 		return returnReminder1;
 
 	}
 
-	protected PaymentMessage selectPaymentMessageObject(String type, String messageId, String noticeNumber, String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source) {
+	protected PaymentMessage selectPaymentMessageObject(String type, String messageId, String noticeNumber, String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source, String fiscalCode) {
 		PaymentMessage paymentMessage = null;
-		paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source);
+		paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source, fiscalCode);
 		return paymentMessage;
 	}
 	
