@@ -3,7 +3,6 @@ package it.gov.pagopa.paymentupdater;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.Rule;
@@ -16,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import it.gov.pagopa.paymentupdater.dto.PaymentMessage;
 import it.gov.pagopa.paymentupdater.dto.avro.MessageContentType;
-import it.gov.pagopa.paymentupdater.dto.avro.MessageFeatureLevelType;
 import it.gov.pagopa.paymentupdater.dto.payments.Creditor;
 import it.gov.pagopa.paymentupdater.dto.payments.Debtor;
 import it.gov.pagopa.paymentupdater.dto.payments.DebtorPosition;
@@ -27,7 +25,6 @@ import it.gov.pagopa.paymentupdater.dto.payments.Psp;
 import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
-
 
 public abstract class AbstractMock {
 
@@ -49,16 +46,16 @@ public abstract class AbstractMock {
 	}
 
 	public void mockGetPaymentByNoticeNumberAndFiscalCodeWithResponse(Payment reminder) {
-		List<Payment> listPayment = new ArrayList<>();
-		listPayment.add(reminder);
-		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString())).thenReturn(listPayment);
+		Mockito.when(mockRepository.getPaymentByNoticeNumberAndFiscalCode(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(Optional.of(reminder));
 	}
-	
+
 	public void mockGetPaymentByNoticeNumber(Payment reminder) {
 		Mockito.when(mockRepository.getPaymentByRptId(Mockito.anyString())).thenReturn(reminder);
 	}
 
-	protected Payment selectReminderMockObject(String type, String id, String contentType, String fiscalCode, int numReminder) {
+	protected Payment selectReminderMockObject(String type, String id, String contentType, String fiscalCode,
+			int numReminder) {
 		Payment returnReminder1 = null;
 		returnReminder1 = new Payment();
 		returnReminder1.setId(id);
@@ -69,25 +66,27 @@ public abstract class AbstractMock {
 
 	}
 
-	protected PaymentMessage selectPaymentMessageObject(String type, String messageId, String noticeNumber, String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source, String fiscalCode) {
+	protected PaymentMessage selectPaymentMessageObject(String type, String messageId, String noticeNumber,
+			String payeeFiscalCode, boolean paid, LocalDate dueDate, double amount, String source, String fiscalCode) {
 		PaymentMessage paymentMessage = null;
-		paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source, fiscalCode);
+		paymentMessage = new PaymentMessage(messageId, noticeNumber, payeeFiscalCode, paid, dueDate, amount, source,
+				fiscalCode);
 		return paymentMessage;
 	}
-	
+
 	protected ProxyPaymentResponse getProxyResponse() {
-    	ProxyPaymentResponse paymentResponse = new ProxyPaymentResponse();
-    	paymentResponse.setCodiceContestoPagamento("");
-    	paymentResponse.setImportoSingoloVersamento("20");
-    	paymentResponse.setDetail_v2("PPT_RPT_DUPLICATA");
-    	paymentResponse.setDetail("");
-    	paymentResponse.setInstance("");
-    	paymentResponse.setStatus(500);
-    	paymentResponse.setType("");
-    	paymentResponse.setTitle("");
-    	return paymentResponse;
+		ProxyPaymentResponse paymentResponse = new ProxyPaymentResponse();
+		paymentResponse.setCodiceContestoPagamento("");
+		paymentResponse.setImportoSingoloVersamento("20");
+		paymentResponse.setDetail_v2("PPT_RPT_DUPLICATA");
+		paymentResponse.setDetail("");
+		paymentResponse.setInstance("");
+		paymentResponse.setStatus(500);
+		paymentResponse.setType("");
+		paymentResponse.setTitle("");
+		return paymentResponse;
 	}
-	
+
 	protected String getPaymentRoot() {
 		PaymentRoot pr = new PaymentRoot();
 		Creditor creditor = new Creditor();
@@ -115,7 +114,7 @@ public abstract class AbstractMock {
 		psp.setIdPsp("test");
 		pr.setPsp(psp);
 		pr.setUuid("123");
-		pr.setVersion("");	
+		pr.setVersion("");
 		info.setAmount("123");
 		info.setDueDate("9999/12/31");
 		info.setFee("123");
@@ -126,7 +125,7 @@ public abstract class AbstractMock {
 		info.setPaymentToken("");
 		info.setTouchpoint("");
 		info.setTransferDate("");
-		pr.setPaymentInfo(info);		
+		pr.setPaymentInfo(info);
 		payer.setFullName("test");
 		payer.setEntityUniqueIdentifierValue("");
 		payer.setEntityUniqueIdentifierType("");
@@ -149,7 +148,7 @@ public abstract class AbstractMock {
 		Assertions.assertEquals("123", info.getAmount());
 		return pr.toString();
 	}
-	
+
 	protected Payment getTestReminder() {
 		Payment reminder = new Payment();
 		reminder.setReadFlag(true);
@@ -171,6 +170,5 @@ public abstract class AbstractMock {
 		reminder.setContent_paymentData_noticeNumber("");
 		return reminder;
 	}
-
 
 }
