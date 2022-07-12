@@ -12,11 +12,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.paymentupdater.dto.avro.MessageContentType;
-import it.gov.pagopa.paymentupdater.dto.avro.MessageFeatureLevelType;
 import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.service.PaymentService;
 import it.gov.pagopa.paymentupdater.service.PaymentServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public class MessageKafkaConsumer {
 
@@ -33,21 +33,23 @@ public class MessageKafkaConsumer {
 	private String payload = null;
 
 	@KafkaListener(topics = "${kafka.message}", groupId = "consumer-message")
-	public void messageKafkaListener(Payment reminder) throws JsonProcessingException {	
+	public void messageKafkaListener(Payment reminder) throws JsonProcessingException {
 
-		if(reminder.getContent_type().equals(MessageContentType.PAYMENT)) {		
-			log.debug("Received message: {} ", reminder);				
+		if (reminder.getContent_type().equals(MessageContentType.PAYMENT)) {
+			log.debug("Received message: {} ", reminder);
 			checkNullInMessage(reminder);
 			payload = reminder.toString();
-			Payment pp = paymentService.getPaymentByNoticeNumberAndFiscalCode(reminder.getContent_paymentData_noticeNumber(), reminder.getContent_paymentData_payeeFiscalCode());
-			if(pp == null) {
-				String rptId = reminder.getContent_paymentData_payeeFiscalCode().concat(reminder.getContent_paymentData_noticeNumber());
+			Payment pp = paymentService.getPaymentByNoticeNumberAndFiscalCode(
+					reminder.getContent_paymentData_noticeNumber(), reminder.getContent_paymentData_payeeFiscalCode());
+			if (pp == null) {
+				String rptId = reminder.getContent_paymentData_payeeFiscalCode()
+						.concat(reminder.getContent_paymentData_noticeNumber());
 				reminder.setRptId(rptId);
 				Map<String, Boolean> map = paymentServiceImpl.checkPayment(rptId);
-				if(map.containsKey("isPaid")) {
+				if (map.containsKey("isPaid")) {
 					reminder.setPaidFlag(map.get("isPaid"));
 				}
-				paymentService.save(reminder);	
+				paymentService.save(reminder);
 			}
 		}
 
