@@ -48,7 +48,7 @@ paths:
       tags:
         - API  Payment
       summary: Check payment by messageId
-      operationId: isMessagePaid
+      operationId: getMessagePayment
       parameters:
         - name: messageId
           in: path

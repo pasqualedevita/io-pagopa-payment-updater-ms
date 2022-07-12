@@ -28,7 +28,7 @@ public class PaymentController implements CheckApi {
 	}
 
 	@Override
-	public ResponseEntity<ApiPaymentMessage> isMessagePaid(String messageId) {
+	public ResponseEntity<ApiPaymentMessage> getMessagePayment(String messageId) {
 		return paymentService.findById(messageId)
 				.map(pay -> ApiPaymentMessage.builder().messageId(pay.getId())
 						.dueDate(pay.getContent_paymentData_dueDate()).paid(pay.isPaidFlag())

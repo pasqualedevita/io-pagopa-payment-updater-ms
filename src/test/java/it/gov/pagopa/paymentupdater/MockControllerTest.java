@@ -53,7 +53,7 @@ public class MockControllerTest extends AbstractMock {
         }
 
         @Test
-        public void callIsMessagePaid() throws Exception {
+        public void callGetMessagePayment() throws Exception {
                 Payment payment = new Payment();
                 mockFindIdWithResponse(payment);
                 // when
