@@ -9,7 +9,7 @@ import it.gov.pagopa.paymentupdater.model.Payment;
 
 public interface PaymentService {
 
-	Payment getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode);
+	Optional<Payment> getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode);
 
 	void save(Payment reminder);
 

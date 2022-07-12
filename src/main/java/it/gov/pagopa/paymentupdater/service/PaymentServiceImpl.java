@@ -2,7 +2,6 @@ package it.gov.pagopa.paymentupdater.service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -59,11 +58,9 @@ public class PaymentServiceImpl implements PaymentService {
 	private KafkaTemplate<String, String> kafkaTemplatePayments;
 
 	@Override
-	public Payment getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode) {
+	public Optional<Payment> getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode) {
 
-		List<Payment> listPayment = paymentRepository.getPaymentByNoticeNumberAndFiscalCode(noticeNumber, fiscalCode);
-
-		return listPayment.isEmpty() ? null : listPayment.get(0);
+		return paymentRepository.getPaymentByNoticeNumberAndFiscalCode(noticeNumber, fiscalCode);
 	}
 
 	@Override

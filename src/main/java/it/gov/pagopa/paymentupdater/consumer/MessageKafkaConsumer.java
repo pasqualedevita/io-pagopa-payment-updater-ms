@@ -39,9 +39,9 @@ public class MessageKafkaConsumer {
 			log.debug("Received message: {} ", reminder);
 			checkNullInMessage(reminder);
 			payload = reminder.toString();
-			Payment pp = paymentService.getPaymentByNoticeNumberAndFiscalCode(
+			var pp = paymentService.getPaymentByNoticeNumberAndFiscalCode(
 					reminder.getContent_paymentData_noticeNumber(), reminder.getContent_paymentData_payeeFiscalCode());
-			if (pp == null) {
+			if (pp.isEmpty()) {
 				String rptId = reminder.getContent_paymentData_payeeFiscalCode()
 						.concat(reminder.getContent_paymentData_noticeNumber());
 				reminder.setRptId(rptId);
