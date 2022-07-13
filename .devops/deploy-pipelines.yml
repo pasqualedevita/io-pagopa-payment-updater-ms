@@ -1,11 +1,10 @@
 # Azure DevOps pipeline to release a new version and deploy to production.
 
 variables:
-  NAMESPACE: 'payments'
-  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
-  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
   BUILD_NUMBER: $(Build.BuildNumber)
-  DOCKER_IMAGE: 'io-pagopa-payment-updater-ms'
+  NAMESPACE: $(TF_NAMESPACE) # 'payments'
+  DOCKER_IMAGE: $(TF_DOCKER_IMAGE) # 'io-pagopa-payment-updater-ms'
+  CONTAINER_REGISTRY: $(TF_CONTAINER_REGISTRY) # 'io-pagopa-payment-updater-ms'
 
 parameters:
   - name: 'RELEASE_SEMVER'
