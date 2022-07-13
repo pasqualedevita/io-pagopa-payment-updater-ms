@@ -24,6 +24,7 @@ public class HealthcheckController {
 
     @GetMapping(value = "/ready")
     public ResponseEntity<Object> checkReady() throws JsonProcessingException {
+        System.out.println("Ready API");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
