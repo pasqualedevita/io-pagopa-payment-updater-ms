@@ -1,7 +1,6 @@
 package it.gov.pagopa.paymentupdater.service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -15,10 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.retry.RecoveryCallback;
-import org.springframework.retry.RetryCallback;
-import org.springframework.retry.RetryContext;
-import org.springframework.retry.support.RetryTemplate;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpServerErrorException;
@@ -32,7 +29,6 @@ import it.gov.pagopa.paymentupdater.dto.request.ProxyPaymentResponse;
 import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.repository.PaymentRepository;
-import it.gov.pagopa.paymentupdater.retriable.MongoRetryContextCache;
 import it.gov.pagopa.paymentupdater.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,9 +58,6 @@ public class PaymentServiceImpl implements PaymentService {
 	@Autowired
 	@Qualifier("kafkaTemplatePayments")
 	private KafkaTemplate<String, String> kafkaTemplatePayments;
-
-	@Autowired
-	private MongoRetryContextCache mongoRetryContextCache;
 
 	@Override
 	public Optional<Payment> getPaymentByNoticeNumberAndFiscalCode(String noticeNumber, String fiscalCode) {
@@ -118,30 +111,39 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
+	@Retryable(stateful = true, maxAttempts = 10, backoff = @Backoff(delay = 1000), value = Exception.class)
 	public Optional<Payment> findById(String messageId) throws Exception {
+		System.out.println("messageId => " + messageId);
+		if (messageId.equals("test")) {
+			System.out.println(" retry retry retry");
+			throw new Exception("retry test");
+		}
+		return paymentRepository.findById(messageId);
+		// RetryTemplate retryTemplate =
+		// RetryTemplate.builder().maxAttempts(5).exponentialBackoff(1000L, 1.5, 30000)
+		// .build();
+		// retryTemplate.setRetryContextCache(mongoRetryContextCache);
+		// return retryTemplate.execute(new RetryCallback<Optional<Payment>,
+		// Exception>() {
+		// @Override
+		// public Optional<Payment> doWithRetry(RetryContext context) throws Exception {
+		// System.out.println("RetryContext -> " + context.toString());
+		// if (messageId.equals("test")) {
+		// System.out.println("retry test n°" + context.getRetryCount() + "=> " + new
+		// Date());
+		// throw new Exception("retry test");
+		// }
+		// return paymentRepository.findById(messageId);
+		// }
+		// }, new RecoveryCallback<Optional<Payment>>() {
 
-		RetryTemplate retryTemplate = RetryTemplate.builder().maxAttempts(5).exponentialBackoff(1000L, 1.5, 30000)
-				.build();
-		retryTemplate.setRetryContextCache(mongoRetryContextCache);
-		return retryTemplate.execute(new RetryCallback<Optional<Payment>, Exception>() {
-			@Override
-			public Optional<Payment> doWithRetry(RetryContext context) throws Exception {
-				System.out.println("RetryContext -> " + context.toString());
-				if (messageId.equals("test")) {
-					System.out.println("retry test n°" + context.getRetryCount() + "=> " + new Date());
-					throw new Exception("retry test");
-				}
-				return paymentRepository.findById(messageId);
-			}
-		}, new RecoveryCallback<Optional<Payment>>() {
+		// @Override
+		// public Optional<Payment> recover(RetryContext context) throws Exception {
+		// System.out.println("recover");
+		// return Optional.empty();
+		// }
 
-			@Override
-			public Optional<Payment> recover(RetryContext context) throws Exception {
-				System.out.println("recover");
-				return Optional.empty();
-			}
-
-		});
+		// });
 
 	}
 

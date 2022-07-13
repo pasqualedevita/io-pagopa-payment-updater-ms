@@ -1,7 +1,6 @@
 package it.gov.pagopa.paymentupdater.retriable;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.retry.RetryContext;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +13,5 @@ public class MongoRetryContext {
 
     @Id
     private Object key;
-    private RetryContext value;
+    private String value;
 }
