@@ -54,9 +54,9 @@ public class MessageKafkaConsumerTest extends AbstractMock{
 	
     @SuppressWarnings("unchecked")
 	@Test
-    public void test_producerKafica_Ok() throws JsonProcessingException {
+    public void test_producerKafka_Ok() throws JsonProcessingException {
     	kafkaTemplate = new KafkaTemplate<>((ProducerFactory<String, String>) ApplicationContextProvider.getBean("producerFactory"));
-    	producer.sendReminder(selectPaymentMessageObject("1231", "", "2121", "AAABBB77Y66A444A", false, LocalDate.now(), 0.0, "test", "BBBPPP77J99A888A"), kafkaTemplate, mapper, "payment-updates");
+    	producer.sendReminder(selectPaymentMessageObject("1231", "", "2121", "AAABBB77Y66A444A", false, LocalDate.now(), 0.0, "test", "BBBPPP77J99A888A"), kafkaTemplate, "payment-updates");
     	Assertions.assertTrue(true);
     }
     

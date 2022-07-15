@@ -23,12 +23,12 @@ import io.swagger.annotations.Api;
 public class HealthcheckController {
 
     @GetMapping(value = "/ready")
-    public ResponseEntity<Object> checkReady() throws JsonProcessingException {
+    public ResponseEntity<Object> checkReady() {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/live")
-    public ResponseEntity<Object> checkLive() throws JsonProcessingException {
+    public ResponseEntity<Object> checkLive() {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

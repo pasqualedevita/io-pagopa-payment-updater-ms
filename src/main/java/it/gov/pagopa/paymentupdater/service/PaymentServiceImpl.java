@@ -98,7 +98,7 @@ public class PaymentServiceImpl implements PaymentService {
 					message.setNoticeNumber(reminder.getContent_paymentData_noticeNumber());
 					message.setPayeeFiscalCode(reminder.getContent_paymentData_payeeFiscalCode());
 					message.setSource("payments");
-					producer.sendReminder(message, kafkaTemplatePayments, mapper, topic);
+					producer.sendReminder(mapper.writeValueAsString(message), kafkaTemplatePayments, topic);
 					map.put("isPaid", true);
 				}
 				return map;
