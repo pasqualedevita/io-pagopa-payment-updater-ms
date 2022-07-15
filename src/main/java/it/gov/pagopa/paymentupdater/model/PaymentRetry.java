@@ -17,7 +17,6 @@ import lombok.ToString;
 @Getter @Setter @NoArgsConstructor
 @JsonIgnoreProperties
 @Document(collection = "#{@collectionRetry}")
-@ToString
 public class PaymentRetry {
 
 	@Id
