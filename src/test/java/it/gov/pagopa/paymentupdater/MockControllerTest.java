@@ -62,7 +62,7 @@ public class MockControllerTest extends AbstractMock {
                                                 .accept(MediaType.APPLICATION_JSON))
                                 .andReturn().getResponse();
                 // then
-                assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+                assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
         }
 
         @Test
