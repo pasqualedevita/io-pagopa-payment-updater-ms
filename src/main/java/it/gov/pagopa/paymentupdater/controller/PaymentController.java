@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class PaymentController {
 	PaymentService paymentService;
 
 	@GetMapping(value = "/check/{rptId}")
-	public ResponseEntity<InlineResponse200> checkProxy(String rptId) {
+	public ResponseEntity<InlineResponse200> checkProxy(@PathVariable String rptId) {
 		try {
 			var result = paymentService.checkPayment(rptId);
 			return new ResponseEntity<>(new InlineResponse200(result.get("isPaid")), HttpStatus.OK);
@@ -41,7 +42,7 @@ public class PaymentController {
 	}
 
 	@GetMapping(value = "/check/messages/{messageId}")
-	public ResponseEntity<ApiPaymentMessage> getMessagePayment(String messageId) {
+	public ResponseEntity<ApiPaymentMessage> getMessagePayment(@PathVariable String messageId) {
 		return paymentService.findById(messageId)
 				.map(pay -> ApiPaymentMessage.builder().messageId(pay.getId())
 						.dueDate(pay.getContent_paymentData_dueDate()).paid(pay.isPaidFlag())
