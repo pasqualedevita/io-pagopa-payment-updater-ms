@@ -45,7 +45,7 @@ public class MockControllerTest extends AbstractMock {
         private void callProxy() throws Exception {
                 // when
                 MockHttpServletResponse response = mvc.perform(
-                                get("/check/ABC")
+                                get("/api/v1/payment/check/ABC")
                                                 .accept(MediaType.APPLICATION_JSON))
                                 .andReturn().getResponse();
                 // then
@@ -58,7 +58,7 @@ public class MockControllerTest extends AbstractMock {
                 mockFindIdWithResponse(payment);
                 // when
                 MockHttpServletResponse response = mvc.perform(
-                                get("/check/messages/ABC")
+                                get("/api/v1/payment/check/messages/ABC")
                                                 .accept(MediaType.APPLICATION_JSON))
                                 .andReturn().getResponse();
                 // then
