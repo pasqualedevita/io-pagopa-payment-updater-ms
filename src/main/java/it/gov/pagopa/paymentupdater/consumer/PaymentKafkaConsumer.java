@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 
@@ -56,30 +57,31 @@ public class PaymentKafkaConsumer {
 	private int attemptsMax;
 
 	private CountDownLatch latch = new CountDownLatch(1);
-
+    @Transactional
 	@KafkaListener(topics = "${kafka.payment}", groupId = "consumer-Payment", containerFactory = "kafkaListenerContainerFactoryPaymentRoot")
 	public void paymentKafkaListener(PaymentRoot root) throws JsonProcessingException {
-
 		log.debug("Received payment-root: {} ", root);
-
-		PaymentMessage message = new PaymentMessage();
-		message.setSource("payments");
-		message.setNoticeNumber(root.getDebtorPosition() != null ? root.getDebtorPosition().getNoticeNumber() : null);
-		message.setPayeeFiscalCode(root.getCreditor() != null ? root.getCreditor().getIdPA() : null);
-		message.setPaid(true);
-
-		var maybeReminderToSend = paymentService.getPaymentByNoticeNumberAndFiscalCode(message.getNoticeNumber(),
-				message.getPayeeFiscalCode());
-		if (maybeReminderToSend.isPresent()) {
-			var reminderToSend = maybeReminderToSend.get();
-			reminderToSend.setPaidFlag(true);
-			paymentService.save(reminderToSend); 
-
-			message.setFiscalCode(reminderToSend.getFiscal_code());
-			message.setMessageId(reminderToSend.getId());
-			sendReminderWithRetry(mapper.writeValueAsString(message));
-		} else {
-			log.info("Not found reminder in payment data with notice number: {}", message.getNoticeNumber());
+		if (Objects.nonNull(root) && Objects.nonNull(root.getDebtorPosition()) && Objects.nonNull(root.getDebtorPosition().getNoticeNumber())){
+			PaymentMessage message = new PaymentMessage();
+			message.setSource("payments");
+			message.setNoticeNumber(root.getDebtorPosition().getNoticeNumber());
+			message.setPayeeFiscalCode(root.getCreditor() != null ? root.getCreditor().getIdPA() : null);
+			message.setPaid(true);
+	
+			var maybeReminderToSend = paymentService.getPaymentByNoticeNumberAndFiscalCode(message.getNoticeNumber(),
+					message.getPayeeFiscalCode());
+			if (maybeReminderToSend.isPresent()) {
+				var reminderToSend = maybeReminderToSend.get();
+				reminderToSend.setPaidFlag(true);
+				paymentService.save(reminderToSend); 
+	
+				message.setFiscalCode(reminderToSend.getFiscal_code());
+				message.setMessageId(reminderToSend.getId());
+	
+				sendReminderWithRetry(mapper.writeValueAsString(message));
+			} else {
+				log.info("Not found reminder in payment data with notice number: {}", message.getNoticeNumber());
+			}
 		}
 		this.latch.countDown();
 	}

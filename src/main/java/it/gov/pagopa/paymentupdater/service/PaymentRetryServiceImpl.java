@@ -8,10 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import it.gov.pagopa.paymentupdater.model.PaymentRetry;
 import it.gov.pagopa.paymentupdater.repository.PaymentRetryRepository;
-import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
-@Slf4j
 public class PaymentRetryServiceImpl implements PaymentRetryService {
 	
 	@Autowired PaymentRetryRepository paymentRetryRepository;
