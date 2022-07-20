@@ -2,11 +2,11 @@ package it.gov.pagopa.paymentupdater.deserialize;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.springframework.boot.json.JsonParseException;
-import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.gov.pagopa.paymentupdater.model.JsonLoader;
@@ -16,7 +16,7 @@ import it.gov.pagopa.paymentupdater.util.TelemetryCustomEvent;
 import lombok.extern.slf4j.Slf4j;
 import tech.allegro.schema.json2avro.converter.JsonAvroConverter;
 @Slf4j
-public class AvroMessageDeserializer<T> implements Deserializer<T> {
+public class AvroMessageDeserializer implements Deserializer<Payment> {
 
 	JsonLoader schema;
 	ObjectMapper mapper;
@@ -34,7 +34,7 @@ public class AvroMessageDeserializer<T> implements Deserializer<T> {
 	}
 
 	@Override
-	public T deserialize(String topic, byte[] bytes) {	
+	public Payment deserialize(String topic, byte[] bytes) {	
 		Payment returnObject = null;
 		if (bytes != null) {
 			try {
@@ -50,7 +50,7 @@ public class AvroMessageDeserializer<T> implements Deserializer<T> {
 
 		}
 
-		return (T) returnObject;
+		return returnObject;
 	}
 	
 	private void handleErrorMessage(byte[] bytes, Exception e) {

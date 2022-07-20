@@ -64,7 +64,7 @@ public class MockDeserializerIntegrationTest extends AbstractMock{
 		avroMessageDeserializer.setConverter(converter);
 		Mockito.when(converter.convertToJson(Mockito.any(), Mockito.anyString())).thenReturn(byteArrray);
 		Mockito.when(mapper.readValue(Mockito.anyString(), Mockito.any(Class.class))).thenReturn(new Payment());
-		Payment payment = (Payment) avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
+		Payment payment = avroMessageDeserializer.deserialize(null, messageSchema.getJsonString().getBytes());
 		Assertions.assertNotNull(payment);
 	}
 	

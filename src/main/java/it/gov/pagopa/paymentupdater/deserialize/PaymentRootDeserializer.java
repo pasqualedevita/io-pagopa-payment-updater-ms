@@ -2,11 +2,9 @@ package it.gov.pagopa.paymentupdater.deserialize;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.kafka.common.serialization.Deserializer;
-import org.joda.time.LocalDateTime;
 import org.springframework.boot.json.JsonParseException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +15,7 @@ import it.gov.pagopa.paymentupdater.util.TelemetryCustomEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class PaymentRootDeserializer<T> implements Deserializer<T> {
+public class PaymentRootDeserializer implements Deserializer<PaymentRoot> {
 
 	ObjectMapper mapper;
 
@@ -26,7 +24,7 @@ public class PaymentRootDeserializer<T> implements Deserializer<T> {
 	}
 
 	@Override
-	public  T deserialize(String s, byte[] bytes) {
+	public  PaymentRoot deserialize(String s, byte[] bytes) {
 		PaymentRoot paymentRoot = null;
 		try {
 			paymentRoot = mapper.readValue(bytes, PaymentRoot.class);
@@ -36,7 +34,7 @@ public class PaymentRootDeserializer<T> implements Deserializer<T> {
 			log.error(e.getMessage());
 			handleErrorPaymentMessage(bytes, e);
 		}
-		return (T) paymentRoot;
+		return paymentRoot;
 	}
 	
 	

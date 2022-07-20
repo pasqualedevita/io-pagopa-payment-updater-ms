@@ -13,10 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +24,6 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.event.RetryOnErrorEvent;
 import it.gov.pagopa.paymentupdater.dto.PaymentMessage;
 import it.gov.pagopa.paymentupdater.dto.payments.PaymentRoot;
-import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.model.PaymentRetry;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 import it.gov.pagopa.paymentupdater.service.PaymentRetryService;
@@ -78,7 +74,7 @@ public class PaymentKafkaConsumer {
 				message.setFiscalCode(reminderToSend.getFiscal_code());
 				message.setMessageId(reminderToSend.getId());
 	
-				sendReminderWithRetry(mapper.writeValueAsString(message));
+				sendPaymentUpdateWithRetry(mapper.writeValueAsString(message));
 			} else {
 				log.info("Not found reminder in payment data with notice number: {}", message.getNoticeNumber());
 			}
@@ -86,7 +82,7 @@ public class PaymentKafkaConsumer {
 		this.latch.countDown();
 	}
 	
-	private void sendReminderWithRetry(String message) {
+	private void sendPaymentUpdateWithRetry(String message) {
 		IntervalFunction intervalFn = IntervalFunction.of(intervalFunction);
 		RetryConfig retryConfig = RetryConfig.custom()
 				.maxAttempts(attemptsMax)			
@@ -104,7 +100,7 @@ public class PaymentKafkaConsumer {
 				if (Objects.nonNull(retryMessage) && paymentList.isEmpty()) {
 					paymentRetryService.save(retryMessage);
 				}					
-				TelemetryCustomEvent.writeTelemetry("ErrorSendReminder", new HashMap<>(), getErrorMap(retryMessage, event));
+				TelemetryCustomEvent.writeTelemetry("ErrorSendPaymentUpdate", new HashMap<>(), getErrorMap(retryMessage, event));
 			}
 		});
 		sendReminderFn.apply(message);
