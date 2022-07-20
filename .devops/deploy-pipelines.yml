@@ -19,7 +19,7 @@ parameters:
   - name: 'FORCE_REPLACE_DOCKER_IMAGE'
     displayName: 'Force the existing docker image to be replaced'
     type: boolean
-    default: False
+    default: True
     values:
       - False
       - True
