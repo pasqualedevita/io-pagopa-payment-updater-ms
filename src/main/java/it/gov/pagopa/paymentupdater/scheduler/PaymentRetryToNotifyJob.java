@@ -58,7 +58,7 @@ public class PaymentRetryToNotifyJob implements Job {
 			try {
 				producer.sendReminder(mapper.writeValueAsString(retry), kafkaTemplatePayments, producerTopic);
 				paymentRetryService.delete(retry);
-			} catch (JsonProcessingException | InterruptedException | ExecutionException e) {
+			} catch (Exception e) {
 				log.error(e.getMessage());
 			}
 		});

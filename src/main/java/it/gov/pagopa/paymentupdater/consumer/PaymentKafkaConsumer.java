@@ -96,7 +96,7 @@ public class PaymentKafkaConsumer {
 				notObj -> {
 					try {				
 						return producer.sendReminder(message, kafkaTemplatePayments, producerTopic);
-					} catch (InterruptedException | ExecutionException e) {
+					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
 				});
