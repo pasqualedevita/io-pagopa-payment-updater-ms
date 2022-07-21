@@ -3,6 +3,7 @@ package it.gov.pagopa.paymentupdater.scheduler;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.transaction.Transactional;
 
@@ -57,7 +58,7 @@ public class PaymentRetryToNotifyJob implements Job {
 			try {
 				producer.sendReminder(mapper.writeValueAsString(retry), kafkaTemplatePayments, producerTopic);
 				paymentRetryService.delete(retry);
-			} catch (JsonProcessingException e) {
+			} catch (JsonProcessingException | InterruptedException | ExecutionException e) {
 				log.error(e.getMessage());
 			}
 		});

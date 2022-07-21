@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -90,7 +93,13 @@ public class PaymentKafkaConsumer {
 				.build();
 		Retry retry = Retry.of("sendNotificationWithRetry", retryConfig);
 		Function<Object, Object> sendReminderFn = Retry.decorateFunction(retry, 
-				notObj -> producer.sendReminder(message, kafkaTemplatePayments, producerTopic));
+				notObj -> {
+					try {				
+						return producer.sendReminder(message, kafkaTemplatePayments, producerTopic);
+					} catch (InterruptedException | ExecutionException e) {
+						throw new RuntimeException(e);
+					}
+				});
 		Retry.EventPublisher publisher = retry.getEventPublisher();
 		publisher.onError(event -> {
 			if (event.getNumberOfRetryAttempts() == attemptsMax) {
@@ -99,8 +108,8 @@ public class PaymentKafkaConsumer {
 				List<PaymentRetry> paymentList = paymentRetryService.getPaymentRetryByNoticeNumberAndFiscalCode(retryMessage.getNoticeNumber(), retryMessage.getPayeeFiscalCode());
 				if (Objects.nonNull(retryMessage) && paymentList.isEmpty()) {
 					paymentRetryService.save(retryMessage);
-				}					
-				TelemetryCustomEvent.writeTelemetry("ErrorSendPaymentUpdate", new HashMap<>(), getErrorMap(retryMessage, event));
+					TelemetryCustomEvent.writeTelemetry("ErrorSendPaymentUpdate", new HashMap<>(), getErrorMap(retryMessage, event));
+				}								
 			}
 		});
 		sendReminderFn.apply(message);
