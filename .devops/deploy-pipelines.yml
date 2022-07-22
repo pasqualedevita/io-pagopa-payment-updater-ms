@@ -177,47 +177,29 @@ stages:
                   displayName: Helm upgrade
                   condition: and(succeeded(), eq(${{ parameters.ENVIRONMENT_WEU_BETA }}, True))
                   inputs:
-                    kubernetesServiceEndpoint: $(KUBERNETES_SERVICE_CONN_WEU_BETA)
+                    kubernetesServiceEndpoint: io-payments-aks-weu-beta
                     namespace: $(NAMESPACE)
                     command: upgrade
                     chartType: filepath
                     chartPath: $(Pipeline.Workspace)/helm
-                    chartName: $(DOCKER_IMAGE_NAME)
-                    releaseName: $(DOCKER_IMAGE_NAME)
+                    chartName: $(DOCKER_IMAGE)
+                    releaseName: $(DOCKER_IMAGE)
                     valueFile: '$(Pipeline.Workspace)/helm/values-beta.yaml'
                     install: true
                     waitForExecution: true
                     arguments: '--timeout 5m0s'
-                    overrideValues: microservice-chart.image.tag=$(Build.BuildId)
                 - task: HelmDeploy@0
                   displayName: Helm upgrade
                   condition: and(succeeded(), eq(${{ parameters.ENVIRONMENT_WEU_PROD_01 }}, True))
                   inputs:
-                    kubernetesServiceEndpoint: $(KUBERNETES_SERVICE_CONN_WEU_PROD_01)
+                    kubernetesServiceEndpoint: io-payments-aks-weu-prod01
                     namespace: $(NAMESPACE)
                     command: upgrade
                     chartType: filepath
                     chartPath: $(Pipeline.Workspace)/helm
-                    chartName: $(DOCKER_IMAGE_NAME)
-                    releaseName: $(DOCKER_IMAGE_NAME)
+                    chartName: $(DOCKER_IMAGE)
+                    releaseName: $(DOCKER_IMAGE)
                     valueFile: '$(Pipeline.Workspace)/helm/values-prod01.yaml'
                     install: true
                     waitForExecution: true
                     arguments: '--timeout 5m0s'
-                    overrideValues: microservice-chart.image.tag=$(Build.BuildId)
-                - task: HelmDeploy@0
-                  displayName: Helm upgrade
-                  condition: and(succeeded(), eq(${{ parameters.ENVIRONMENT_WEU_PROD_02 }}, True))
-                  inputs:
-                    kubernetesServiceEndpoint: $(KUBERNETES_SERVICE_CONN_WEU_PROD_02)
-                    namespace: $(NAMESPACE)
-                    command: upgrade
-                    chartType: filepath
-                    chartPath: $(Pipeline.Workspace)/helm
-                    chartName: $(DOCKER_IMAGE_NAME)
-                    releaseName: $(DOCKER_IMAGE_NAME)
-                    valueFile: '$(Pipeline.Workspace)/helm/values-prod02.yaml'
-                    install: true
-                    waitForExecution: true
-                    arguments: '--timeout 5m0s'
-                    overrideValues: microservice-chart.image.tag=$(Build.BuildId)
