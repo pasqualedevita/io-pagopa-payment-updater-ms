@@ -23,13 +23,27 @@ parameters:
     values:
       - False
       - True
-  # - name: 'environment'
-  #   displayName: 'Force the existing docker image to be replaced'
-  #   type: string
-  #   default: beta
-  #   values:
-  #     - prod
-  #     - beta
+  - name: 'ENVIRONMENT_WEU_BETA'
+    displayName: 'Deploy to weu-beta'
+    type: boolean
+    default: True
+    values:
+      - False
+      - True
+  - name: 'ENVIRONMENT_WEU_PROD_01'
+    displayName: 'Deploy to weu-prod-01'
+    type: boolean
+    default: True
+    values:
+      - False
+      - True
+  - name: 'ENVIRONMENT_WEU_PROD_02'
+    displayName: 'Deploy to weu-prod-02'
+    type: boolean
+    default: False
+    values:
+      - False
+      - True
 
 # Only manual activations are intended
 trigger: none
@@ -161,14 +175,15 @@ stages:
                       helm dep build $(Pipeline.Workspace)/helm
                 - task: HelmDeploy@0
                   displayName: Helm upgrade
+                  condition: and(succeeded(), eq(${{ parameters.ENVIRONMENT_WEU_BETA }}, True))
                   inputs:
-                    kubernetesServiceEndpoint: io-payments-aks-weu-beta
+                    kubernetesServiceEndpoint: $(KUBERNETES_SERVICE_CONN_WEU_BETA)
                     namespace: $(NAMESPACE)
                     command: upgrade
                     chartType: filepath
                     chartPath: $(Pipeline.Workspace)/helm
-                    chartName: $(DOCKER_IMAGE)
-                    releaseName: $(DOCKER_IMAGE)
+                    chartName: $(DOCKER_IMAGE_NAME)
+                    releaseName: $(DOCKER_IMAGE_NAME)
                     valueFile: '$(Pipeline.Workspace)/helm/values-beta.yaml'
                     install: true
                     waitForExecution: true
@@ -176,15 +191,32 @@ stages:
                     overrideValues: microservice-chart.image.tag=$(Build.BuildId)
                 - task: HelmDeploy@0
                   displayName: Helm upgrade
+                  condition: and(succeeded(), eq(${{ parameters.ENVIRONMENT_WEU_PROD_01 }}, True))
                   inputs:
-                    kubernetesServiceEndpoint: io-payments-aks-weu-prod01
+                    kubernetesServiceEndpoint: $(KUBERNETES_SERVICE_CONN_WEU_PROD_01)
                     namespace: $(NAMESPACE)
                     command: upgrade
                     chartType: filepath
                     chartPath: $(Pipeline.Workspace)/helm
-                    chartName: $(DOCKER_IMAGE)
-                    releaseName: $(DOCKER_IMAGE)
+                    chartName: $(DOCKER_IMAGE_NAME)
+                    releaseName: $(DOCKER_IMAGE_NAME)
                     valueFile: '$(Pipeline.Workspace)/helm/values-prod01.yaml'
+                    install: true
+                    waitForExecution: true
+                    arguments: '--timeout 5m0s'
+                    overrideValues: microservice-chart.image.tag=$(Build.BuildId)
+                - task: HelmDeploy@0
+                  displayName: Helm upgrade
+                  condition: and(succeeded(), eq(${{ parameters.ENVIRONMENT_WEU_PROD_02 }}, True))
+                  inputs:
+                    kubernetesServiceEndpoint: $(KUBERNETES_SERVICE_CONN_WEU_PROD_02)
+                    namespace: $(NAMESPACE)
+                    command: upgrade
+                    chartType: filepath
+                    chartPath: $(Pipeline.Workspace)/helm
+                    chartName: $(DOCKER_IMAGE_NAME)
+                    releaseName: $(DOCKER_IMAGE_NAME)
+                    valueFile: '$(Pipeline.Workspace)/helm/values-prod02.yaml'
                     install: true
                     waitForExecution: true
                     arguments: '--timeout 5m0s'
