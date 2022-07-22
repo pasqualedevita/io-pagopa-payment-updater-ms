@@ -37,16 +37,16 @@ paths:
           $ref: '#/components/responses/400BadRequest'
         '401':
           $ref: '#/components/responses/401Unauthorized'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
         '503':
           $ref: '#/components/responses/503ServiceUnavailable'
-        default:
-          $ref: '#/components/responses/default'
   /check/messages/{messageId}:
     get:
       tags:
         - API  Payment
       summary: Check payment by messageId
-      operationId: isMessagePaid
+      operationId: getMessagePayment
       parameters:
         - name: messageId
           in: path
@@ -59,7 +59,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Payment'
+                $ref: '#/components/schemas/ApiPaymentMessage'
           description: 'check if the message has been paid'
         '404':
           $ref: '#/components/responses/404NotFound'
@@ -69,81 +69,34 @@ paths:
           $ref: '#/components/responses/401Unauthorized'
         '503':
           $ref: '#/components/responses/503ServiceUnavailable'
-        default:
-          $ref: '#/components/responses/default'
 components:
   schemas:
-    Payment:
+    ApiPaymentMessage:
       type: object
       properties:
-        readFlag:
+        messageId:
+          type: string
+          minLength: 1
+        paid:
           type: boolean
-        paidFlag:
-          type: boolean
-        insertionDate:
+          default: false
+        dueDate:
           type: string
-          format: LocalDateTime
-        dateReminder:
-          type: array
-          items:
-            type: string
-            format: LocalDateTime
-        lastDateReminder:
-          type: string
-          format: LocalDateTime
-        maxReadMessageSend:
-          type: integer
-        maxPaidMessageSend:
-          type: integer
-        readDate:
-          type: string
-          format: LocalDateTime
-        paidDate:
-          type: string
-          format: LocalDateTime
-        rptId:
-          type: string
-        message:
-          type: object
-          items:
-              $ref: '#/components/schemas/Message'
-    Message:
-      properties:
-        id:
-          type: string
-        senderServiceId:
-          type: string
-        senderUserId:
-          type: string
-        timeToLiveSeconds:
-          type: integer
-        createdAt:
+          format: date
+        amount:
           type: number
-        isPending:
-          type: boolean
-        content_subject:
+          format: double
+        fiscalCode:
           type: string
-        content_type:
+          minLength: 1
+        noticeNumber:
           type: string
-          enum: [GENERIC, PAYMENT, EU_COVID_CERT, LEGAL]
-        double content_paymentData_amount:
-          type: number
-        content_paymentData_noticeNumber:
-          type: string
-        content_paymentData_invalidAfterDueDate:
-          type: boolean
-        content_paymentData_payeeFiscalCode:
-          type: string
-        timestamp:
-          type: number
-        fiscal_code:
-          type: string
-        content_paymentData_dueDate:
-          type: string
-          format: LocalDate
-        featureLevelType:
-          type: string
-          enum: [STANDARD, ADVANCED]
+          minLength: 1
+      required:
+        - messageId
+        - paid
+        - fiscalCode
+        - noticeNumber
     Problem:
       properties:
         timestamp:
@@ -157,13 +110,13 @@ components:
         error:
           description: |
             error description.
-          format: uri
           type: string
         path:
           description: |
             An absolute URI that identifies the specific occurrence of the problem.
             It may or may not yield further information if dereferenced.
           type: string
+          format: uri
       type: object
   responses:
       500InternalServerError:
@@ -198,9 +151,3 @@ components:
             schema:
               $ref: '#/components/schemas/Problem'
         description: Unauthorized
-      default:
-        content:
-          application/problem+json:
-            schema:
-              $ref: '#/components/schemas/Problem'
-        description: Unexpected error

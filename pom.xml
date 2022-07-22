@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -29,11 +27,11 @@
 
 
 	<dependencies>
-			<!-- https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-retry -->
+		<!-- https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-retry -->
 		<dependency>
-		    <groupId>io.github.resilience4j</groupId>
-		    <artifactId>resilience4j-retry</artifactId>
-		    <version>1.7.1</version>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-retry</artifactId>
+			<version>1.7.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -77,9 +75,9 @@
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
-		    <groupId>com.google.code.gson</groupId>
-		    <artifactId>gson</artifactId>
-		    <version>2.9.0</version>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.9.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -175,26 +173,26 @@
 			<version>1.8.2</version>
 		</dependency>
 		<dependency>
-		    <groupId>com.azure</groupId>
-		    <artifactId>azure-messaging-eventhubs</artifactId>
-		    <version>5.11.2</version>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-messaging-eventhubs</artifactId>
+			<version>5.11.2</version>
 		</dependency>
-	    <dependency>
-	        <groupId>com.azure</groupId>
-	        <artifactId>azure-messaging-eventhubs-checkpointstore-blob</artifactId>
-	        <version>1.6.0</version>
-	    </dependency>
-	    <!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
 		<dependency>
-		    <groupId>org.apache.avro</groupId>
-		    <artifactId>avro</artifactId>
-		    <version>1.11.0</version>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-messaging-eventhubs-checkpointstore-blob</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.avro/avro -->
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>1.11.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
-		    <groupId>org.json</groupId>
-		    <artifactId>json</artifactId>
-		    <version>20220320</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20220320</version>
 		</dependency>
 		<!-- Mongo -->
 		<dependency>
@@ -202,31 +200,45 @@
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-webflux</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>tech.allegro.schema.json2avro</groupId>
-		    <artifactId>converter</artifactId>
-		    <version>0.2.14</version>
+			<groupId>tech.allegro.schema.json2avro</groupId>
+			<artifactId>converter</artifactId>
+			<version>0.2.14</version>
 		</dependency>
 
 		<dependency>
-		    <groupId>org.springframework.kafka</groupId>
-		    <artifactId>spring-kafka-test</artifactId>
-		    <version>2.8.6</version>
-		    <scope>test</scope>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka-test</artifactId>
+			<version>2.8.6</version>
+			<scope>test</scope>
 		</dependency>
-	    <dependency>
-		    <groupId>org.springframework.kafka</groupId>
-		    <artifactId>spring-kafka</artifactId>
-		    <version>2.8.5</version>
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			<version>2.8.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<version>5.3.19</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+		<dependency>
+		    <groupId>com.microsoft.azure</groupId>
+		    <artifactId>applicationinsights-core</artifactId>
+		    <version>2.6.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>javax.transaction</groupId>
+		    <artifactId>javax.transaction-api</artifactId>
+		    <version>1.3</version>
 		</dependency>
 	</dependencies>
 
@@ -278,7 +290,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/openapi/openapi.yaml</inputSpec>
+							<inputSpec>${project.basedir}/openapi/openapi_V1.yaml</inputSpec>
 							<output>${project.build.directory}/generated-sources</output>
 
 							<generatorName>spring</generatorName>
@@ -287,6 +299,7 @@
 							<enablePostProcessFile>true</enablePostProcessFile>
 							<configOptions>
 								<serializableModel>true</serializableModel>
+								<additionalModelTypeAnnotations>@lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
 							</configOptions>
 						</configuration>
 					</execution>
@@ -336,7 +349,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin> --> 
+			</plugin> -->
 
 		</plugins>
 	</build>

@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.nio.charset.Charset;
 
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
@@ -29,67 +28,60 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.paymentupdater.model.Payment;
 import it.gov.pagopa.paymentupdater.producer.PaymentProducer;
 
-@SpringBootTest(classes = Application.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class MockControllerTest extends AbstractMock {
-	@Autowired
-	private MockMvc mvc;
-	
-	@Autowired
-	ObjectMapper mapper;
-    
-    @Mock
-    private PaymentProducer producer;
-		
-	@Test
-	public void main() {
-		Application.main(new String[] {});
-		Assertions.assertTrue(true);
-	}
-	
-	private void callProxy() throws Exception {
-        // when
-        MockHttpServletResponse response = mvc.perform(
-                get("/api/v1/payment/check/ABC")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-        // then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-	}
-	
-	@Test
-	public void callIsMessagePaid() throws Exception {
-		Payment payment = new Payment();
-		mockFindIdWithResponse(payment);
-        // when
-        MockHttpServletResponse response = mvc.perform(
-                get("/api/v1/payment/check/messages/ABC")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-        // then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-	}
-	
-	
-    @Test
-    public void test_checkAssistenzaIsPaidFalse() throws Exception {
-    	callProxy();
-    }
-    
-	@Test
-    public void test_checkAssistenzaIsPaidTrue() throws Exception {
-		mockGetPaymentByNoticeNumber(getTestReminder());
-		mockSaveWithResponse(getTestReminder());
-    	HttpServerErrorException errorResponse = new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "", mapper.writeValueAsString(getProxyResponse()).getBytes(), Charset.defaultCharset());	   	
-        Mockito.when(restTemplate.exchange(
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.any(HttpMethod.class),
-                ArgumentMatchers.any(HttpEntity.class),
-                ArgumentMatchers.<Class<String>>any())
-        ).thenThrow(errorResponse);
-    	callProxy();
-    }
+        @Autowired
+        private MockMvc mvc;
+
+        @Autowired
+        ObjectMapper mapper;
+
+        @Mock
+        private PaymentProducer producer;
+
+        private void callProxy() throws Exception {
+                // when
+                MockHttpServletResponse response = mvc.perform(
+                                get("/api/v1/payment/check/ABC")
+                                                .accept(MediaType.APPLICATION_JSON))
+                                .andReturn().getResponse();
+                // then
+                assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        }
+
+        @Test
+        public void callGetMessagePayment() throws Exception {
+                Payment payment = new Payment();
+                mockFindIdWithResponse(payment);
+                // when
+                MockHttpServletResponse response = mvc.perform(
+                                get("/api/v1/payment/check/messages/ABC")
+                                                .accept(MediaType.APPLICATION_JSON))
+                                .andReturn().getResponse();
+                // then
+                assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        }
+
+        @Test
+        public void test_checkAssistenzaIsPaidFalse() throws Exception {
+                callProxy();
+        }
+
+        @Test
+        public void test_checkAssistenzaIsPaidTrue() throws Exception {
+                mockGetPaymentByNoticeNumber(getTestReminder());
+                mockSaveWithResponse(getTestReminder());
+                HttpServerErrorException errorResponse = new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR,
+                                "", mapper.writeValueAsString(getProxyResponse()).getBytes(), Charset.defaultCharset());
+                Mockito.when(restTemplate.exchange(
+                                ArgumentMatchers.anyString(),
+                                ArgumentMatchers.any(HttpMethod.class),
+                                ArgumentMatchers.any(HttpEntity.class),
+                                ArgumentMatchers.<Class<String>>any())).thenThrow(errorResponse);
+                callProxy();
+        }
 
 }
