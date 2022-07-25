@@ -185,6 +185,7 @@ stages:
                     chartName: $(DOCKER_IMAGE)
                     releaseName: $(DOCKER_IMAGE)
                     valueFile: '$(Pipeline.Workspace)/helm/values-beta.yaml'
+                    overrideValues: microservice-chart.image.tag=$(Build.BuildId)
                     install: true
                     waitForExecution: true
                     arguments: '--timeout 5m0s'
@@ -200,6 +201,7 @@ stages:
                     chartName: $(DOCKER_IMAGE)
                     releaseName: $(DOCKER_IMAGE)
                     valueFile: '$(Pipeline.Workspace)/helm/values-prod01.yaml'
+                    overrideValues: microservice-chart.image.tag=$(Build.BuildId)
                     install: true
                     waitForExecution: true
                     arguments: '--timeout 5m0s'
