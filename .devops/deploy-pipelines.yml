@@ -120,7 +120,14 @@ stages:
                     next_version="${version_major}.${version_minor}.${version_patch}"
                     echo "[INFO] Next Version: $next_version"
                     echo "##vso[task.setvariable variable=value;isOutput=true]$next_version"
-
+              - task: Bash@3
+                displayName: Get current version
+                name: update_version
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    mvn versions:set -DnewVersion=$(next_version.value)
+                    cat pom.xml
           - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/master') }}:
               - script: |
                   echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
