@@ -133,7 +133,7 @@ stages:
                 inputs:
                   targetType: 'inline'
                   script: |
-                    yq -i ".microservice-chart.image.tag = \"$next_version.value\"" values-beta.yaml
+                    yq -i ".microservice-chart.image.tag = \"$next_version.value\"" helm/values-beta.yaml
                     yq -i ".microservice-chart.image.tag = \"$next_version.value\"" helm/values-prod01.yaml
                     yq -i ".microservice-chart.image.tag = \"$next_version.value\"" helm/values-prod02.yaml
                     cat helm/values-beta.yaml
