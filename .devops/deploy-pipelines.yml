@@ -121,13 +121,22 @@ stages:
                     echo "[INFO] Next Version: $next_version"
                     echo "##vso[task.setvariable variable=value;isOutput=true]$next_version"
               - task: Bash@3
-                displayName: Get current version
-                name: update_version
+                displayName: Update Version Maven
+                name: update_version_maven
                 inputs:
                   targetType: 'inline'
                   script: |
                     mvn versions:set -DnewVersion=$(next_version.value)
-                    cat pom.xml
+              - task: Bash@3
+                displayName: Update Version Helm
+                name: update_version_helm
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    yq -i '.microservice-chart.image.tag = $(next_version.value)' helm/values-beta.yaml
+                    yq -i '.microservice-chart.image.tag = $(next_version.value)' helm/values-prod01.yaml
+                    yq -i '.microservice-chart.image.tag = $(next_version.value)' helm/values-prod02.yaml
+                    cat helm/values-beta.yaml
           - ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/master') }}:
               - script: |
                   echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
