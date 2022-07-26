@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PaymentRetryToNotifyJob implements Job {
 
-	private static final String JOB_LOG_NAME = "Reminders to NOTIFY Job ";
+	private static final String JOB_LOG_NAME = "PaymentRetry to NOTIFY Job ";
 
 	private final PaymentRetryService paymentRetryService; 
 	
@@ -57,7 +57,8 @@ public class PaymentRetryToNotifyJob implements Job {
 		retryList.stream().forEach(retry-> {
 			try {
 				producer.sendReminder(mapper.writeValueAsString(retry), kafkaTemplatePayments, producerTopic);
-				paymentRetryService.delete(retry);
+				log.info("Delete paymentRetry with noticeNumber: {}", retry.getNoticeNumber());
+				paymentRetryService.delete(retry); 
 			} catch (Exception e) {
 				log.error(e.getMessage());
 			}

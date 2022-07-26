@@ -103,7 +103,6 @@ public abstract class AbstractMock {
 		retry.setNoticeNumber("abc");
 		retry.setPaid(true);
 		retry.setMessageId("123");
-		retry.setDueDate(LocalDate.of(2022, 01, 01));
 		retry.setPayeeFiscalCode("ABC");
 		retry.setSource("payments");
 		Assertions.assertEquals(0, retry.getAmount());
@@ -113,7 +112,6 @@ public abstract class AbstractMock {
 		Assertions.assertEquals("123", retry.getMessageId());
 		Assertions.assertEquals("ABC", retry.getPayeeFiscalCode());
 		Assertions.assertEquals("payments", retry.getSource());
-		Assertions.assertEquals(LocalDate.of(2022, 01, 01), retry.getDueDate());
 		return retry;
 	}
 
